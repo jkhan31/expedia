@@ -16,9 +16,10 @@ from utils import (
 from carousel_generator import generate_carousel_for_project
 from format_converter import convert_all_carousel_formats
 from copy_generator import generate_copy_for_project
+from llm_copy_generator import generate_llm_copy_for_project
 
 
-def run_full_pipeline(project_config_path: str, platforms: list = None):
+def run_full_pipeline(project_config_path: str, platforms: list = None, use_llm: bool = False):
     """Run full social content generation pipeline"""
 
     log_progress("=" * 60)
@@ -69,7 +70,13 @@ def run_full_pipeline(project_config_path: str, platforms: list = None):
         log_progress("\n" + "=" * 60)
         log_progress("PHASE 3: COPY GENERATION", "✍️")
         log_progress("=" * 60)
-        generate_copy_for_project(project_config, copy_templates, branding_config)
+
+        if use_llm:
+            log_progress("Using Claude API for creative copy generation...")
+            generate_llm_copy_for_project(project_config, platforms)
+        else:
+            log_progress("Using template-based copy generation...")
+            generate_copy_for_project(project_config, copy_templates, branding_config)
 
         # Phase 4: Video Generation (optional - requires moviepy)
         log_progress("\n" + "=" * 60)
@@ -119,11 +126,16 @@ def main():
         action="store_true",
         help="Enable verbose logging"
     )
+    parser.add_argument(
+        "--use-llm",
+        action="store_true",
+        help="Use Claude API for LLM-generated copy variants (requires ANTHROPIC_API_KEY)"
+    )
 
     args = parser.parse_args()
 
     # Run pipeline
-    success = run_full_pipeline(args.config, args.platforms)
+    success = run_full_pipeline(args.config, args.platforms, args.use_llm)
     sys.exit(0 if success else 1)
 
 
