@@ -10,7 +10,6 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Archivo:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
-        /* ===== jasonkhanani.com Branding ===== */
         :root {
             --rice-paper: #FAF5F0;
             --sumi-ink: #1A1A1A;
@@ -20,14 +19,9 @@
             --border-light: rgba(26, 26, 26, 0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html,
-        body {
+        html, body {
             width: 100%;
             height: 100%;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -48,7 +42,14 @@
             display: flex;
             overflow: hidden;
             width: 100%;
-            position: relative;
+            min-height: 0;
+        }
+
+        /* Critical: container must fill the flex parent */
+        #slides-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
         }
 
         .slide {
@@ -57,105 +58,92 @@
             background: var(--rice-paper);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 60px;
+            padding: 52px 72px 40px;
             overflow-y: auto;
             overflow-x: hidden;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.3s ease-in-out;
+            flex-shrink: 0;
+        }
+
+        /* Title slide: everything centered */
+        .slide.title-slide {
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Content slides: header anchored at top */
+        .slide.content-slide {
+            justify-content: flex-start;
+            align-items: stretch;
         }
 
         .slide-inner {
             width: 100%;
             max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 30px;
-        }
-
-        .slide::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .slide::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .slide::-webkit-scrollbar-thumb {
-            background: var(--border-light);
-            border-radius: 4px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* ===== TITLE SLIDE ===== */
-        .slide.title-slide {
-            justify-content: center;
-            align-items: center;
-            min-height: 100%;
+            flex: 1;
+            gap: 24px;
         }
 
         .slide.title-slide .slide-inner {
             text-align: center;
-            max-width: 900px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            max-width: 860px;
             align-items: center;
-            gap: 20px;
+            justify-content: center;
+            gap: 18px;
         }
 
+        .slide::-webkit-scrollbar { width: 6px; }
+        .slide::-webkit-scrollbar-track { background: transparent; }
+        .slide::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ===== TITLE SLIDE ===== */
         .slide.title-slide h1 {
             font-family: 'Archivo', serif;
             font-size: 72px;
             font-weight: 700;
             color: var(--sumi-ink);
-            margin-bottom: 12px;
             line-height: 1.1;
+            text-align: center;
         }
 
         .slide.title-slide .subtitle {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 400;
             color: var(--hanko-rust);
-            margin-bottom: 40px;
         }
 
         .slide.title-slide .divider {
-            width: 100px;
+            width: 90px;
             height: 3px;
             background: var(--hanko-rust);
-            margin: 30px auto 40px;
+            margin: 10px auto;
         }
 
         .slide.title-slide .author {
             font-size: 16px;
             color: var(--sumi-ink);
             font-weight: 600;
-            margin-bottom: 40px;
             opacity: 0.9;
         }
 
         .slide.title-slide .meta {
             border-top: 1px solid var(--border-light);
-            padding-top: 40px;
+            padding-top: 28px;
+            width: 100%;
         }
 
         .slide.title-slide .meta-item {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--sumi-ink);
-            opacity: 0.7;
-            margin: 8px 0;
+            opacity: 0.65;
+            margin: 7px 0;
             line-height: 1.5;
+            text-align: center;
         }
 
         .slide.title-slide .meta-item a {
@@ -164,59 +152,55 @@
             font-weight: 600;
         }
 
-        .slide.title-slide .meta-item a:hover {
-            text-decoration: underline;
-        }
+        .slide.title-slide .meta-item a:hover { text-decoration: underline; }
 
         /* ===== CONTENT SLIDES ===== */
-        .slide.content-slide .slide-inner {
-            max-width: 1300px;
-        }
-
+        /* Header is always first, always at same vertical position */
         .slide-header {
-            margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .slide-header h2 {
             font-family: 'Archivo', serif;
-            font-size: 48px;
+            font-size: 44px;
             font-weight: 700;
             color: var(--sumi-ink);
-            margin-bottom: 8px;
             border-bottom: 3px solid var(--hanko-rust);
-            padding-bottom: 12px;
+            padding-bottom: 10px;
+            margin-bottom: 6px;
+            line-height: 1.15;
         }
 
         .slide-header .subtitle {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--sumi-ink);
-            opacity: 0.7;
+            opacity: 0.65;
         }
 
         /* ===== LAYOUTS ===== */
-
         .layout-two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            width: 100%;
-            min-height: 500px;
+            gap: 48px;
+            align-items: start;
+            flex: 1;
+            min-height: 0;
         }
 
         .layout-two-column .column {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            height: 100%;
+            gap: 18px;
         }
 
         .layout-single {
-            width: 100%;
-            max-width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* Content Text */
+        /* Content */
         .content-text {
             font-size: 16px;
             line-height: 1.8;
@@ -224,24 +208,16 @@
             opacity: 0.85;
         }
 
-        .content-text p {
-            margin-bottom: 16px;
-        }
-
-        .content-text strong {
-            font-weight: 700;
-            color: var(--sumi-ink);
-        }
+        .content-text p { margin-bottom: 14px; }
+        .content-text p:last-child { margin-bottom: 0; }
+        .content-text strong { font-weight: 700; color: var(--sumi-ink); opacity: 1; }
 
         /* Lists */
-        .content-list {
-            list-style: none;
-            margin: 20px 0;
-        }
+        .content-list { list-style: none; }
 
         .content-list li {
-            padding: 12px 0 12px 28px;
-            font-size: 15px;
+            padding: 13px 0 13px 28px;
+            font-size: 16px;
             position: relative;
             color: var(--sumi-ink);
             opacity: 0.85;
@@ -249,9 +225,7 @@
             border-bottom: 1px solid var(--border-light);
         }
 
-        .content-list li:last-child {
-            border-bottom: none;
-        }
+        .content-list li:last-child { border-bottom: none; }
 
         .content-list li::before {
             content: '→';
@@ -261,105 +235,71 @@
             font-weight: bold;
         }
 
-        /* Metrics Cards */
+        /* Metric Cards */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-            width: 100%;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
         }
 
         .metric-card {
-            background: transparent;
-            padding: 20px;
+            padding: 18px 16px;
             border-left: 4px solid var(--hanko-rust);
         }
 
-        .metric-card.positive {
-            border-left-color: var(--positive-green);
-        }
+        .metric-card.positive { border-left-color: var(--positive-green); }
 
         .metric-card .label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--sumi-ink);
-            opacity: 0.6;
+            opacity: 0.55;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
         }
 
         .metric-card .value {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
             color: var(--hanko-rust);
             font-family: 'Archivo', serif;
+            line-height: 1;
         }
 
-        .metric-card.positive .value {
-            color: var(--positive-green);
-        }
+        .metric-card.positive .value { color: var(--positive-green); }
 
         /* Highlight Box */
         .highlight-box {
-            background: rgba(199, 62, 29, 0.08);
+            background: rgba(199, 62, 29, 0.07);
             border-left: 4px solid var(--hanko-rust);
-            padding: 20px;
-            margin: 20px 0;
-            font-size: 16px;
+            padding: 18px 20px;
+            font-size: 15px;
             line-height: 1.7;
             color: var(--sumi-ink);
         }
 
-        .highlight-box strong {
-            color: var(--hanko-rust);
-            font-weight: 700;
-        }
+        .highlight-box strong { color: var(--hanko-rust); font-weight: 700; }
 
         /* Tables */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin: 20px 0;
-        }
+        .table-container { width: 100%; overflow-x: auto; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
-        table thead {
-            background: var(--hanko-rust);
-            color: var(--rice-paper);
-        }
+        table thead { background: var(--hanko-rust); color: var(--rice-paper); }
 
-        table th {
-            padding: 16px;
-            text-align: left;
-            font-weight: 700;
-            border: none;
-        }
+        table th { padding: 14px 16px; text-align: left; font-weight: 700; }
 
-        table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border-light);
-        }
+        table td { padding: 13px 16px; border-bottom: 1px solid var(--border-light); }
 
-        table tbody tr:hover {
-            background: rgba(199, 62, 29, 0.05);
-        }
+        table tbody tr:hover { background: rgba(199, 62, 29, 0.04); }
 
-        table tbody tr:last-child td {
-            border-bottom: none;
-        }
+        table tbody tr:last-child td { border-bottom: none; }
 
         /* Charts */
         .chart-wrapper {
             position: relative;
             width: 100%;
-            height: 400px;
-            min-height: 400px;
+            height: 360px;
         }
 
         .chart-wrapper canvas {
@@ -367,83 +307,155 @@
             height: 100% !important;
         }
 
+        /* ===== ROOT CAUSE VISUAL ===== */
+        .root-cause-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 28px;
+            flex: 1;
+        }
+
+        .segment-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 32px 20px 28px;
+            background: rgba(26, 26, 26, 0.03);
+            border-top: 5px solid;
+            gap: 10px;
+        }
+
+        .segment-card.budget { border-top-color: var(--positive-green); }
+        .segment-card.mid { border-top-color: var(--fox-orange); }
+        .segment-card.luxury { border-top-color: var(--hanko-rust); }
+
+        .seg-name {
+            font-family: 'Archivo', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--sumi-ink);
+            margin-bottom: 4px;
+        }
+
+        .seg-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .seg-sub {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            opacity: 0.5;
+        }
+
+        .seg-val {
+            font-size: 26px;
+            font-weight: 700;
+            font-family: 'Archivo', serif;
+            color: var(--sumi-ink);
+            line-height: 1.1;
+        }
+
+        .seg-arrow {
+            font-size: 44px;
+            line-height: 1;
+            font-weight: 700;
+        }
+
+        .seg-arrow.up { color: var(--positive-green); }
+        .seg-arrow.down { color: var(--hanko-rust); }
+
+        .seg-gap {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Archivo', serif;
+            padding: 4px 16px;
+        }
+
+        .seg-gap.pos {
+            color: var(--positive-green);
+            background: rgba(41, 92, 39, 0.1);
+        }
+
+        .seg-gap.neg {
+            color: var(--hanko-rust);
+            background: rgba(199, 62, 29, 0.1);
+        }
+
+        .seg-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--border-light);
+            margin: 4px 0;
+        }
+
+        .seg-booking-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            opacity: 0.5;
+        }
+
+        .seg-booking-val {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: 'Archivo', serif;
+            line-height: 1;
+        }
+
+        .seg-booking-val.pos { color: var(--positive-green); }
+        .seg-booking-val.neg { color: var(--hanko-rust); }
+
         /* Footer */
         .slide-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 60px;
+            padding: 14px 72px;
             border-top: 1px solid var(--border-light);
             background: var(--rice-paper);
             flex-shrink: 0;
-            height: auto;
-            gap: 20px;
         }
 
         .slide-number {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--sumi-ink);
-            opacity: 0.6;
+            opacity: 0.5;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
 
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-        }
+        .nav-buttons { display: flex; gap: 12px; }
 
         button {
-            padding: 10px 20px;
+            padding: 9px 20px;
             background: var(--hanko-rust);
             color: var(--rice-paper);
             border: none;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            letter-spacing: 0.3px;
-            transition: all 0.25s ease;
+            letter-spacing: 0.4px;
+            transition: background 0.2s ease;
             text-transform: uppercase;
         }
 
-        button:hover:not(:disabled) {
-            background: var(--sumi-ink);
-        }
+        button:hover:not(:disabled) { background: var(--sumi-ink); }
+        button:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* Responsive */
         @media (max-width: 1024px) {
-            .slide {
-                padding: 40px 30px;
-            }
-
-            .layout-two-column {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                min-height: auto;
-            }
-
-            .slide-header h2 {
-                font-size: 36px;
-            }
-
-            .slide-footer {
-                padding: 16px 30px;
-                flex-direction: column-reverse;
-            }
-
-            .nav-buttons {
-                width: 100%;
-            }
-
-            .nav-buttons button {
-                flex: 1;
-            }
+            .slide { padding: 36px 32px 28px; }
+            .layout-two-column { grid-template-columns: 1fr; gap: 32px; }
+            .root-cause-grid { grid-template-columns: 1fr; gap: 16px; }
+            .slide-header h2 { font-size: 32px; }
+            .slide-footer { padding: 14px 32px; flex-direction: column-reverse; gap: 12px; }
+            .nav-buttons { width: 100%; }
+            .nav-buttons button { flex: 1; }
         }
     </style>
 </head>
@@ -463,6 +475,81 @@
     </div>
 
     <script>
+        // ── Chart annotation helpers ──────────────────────────────────────────
+        function drawDoubleArrow(ctx, x, yTop, yBot, color, label) {
+            const h = 7;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 2;
+
+            // shaft
+            ctx.beginPath();
+            ctx.moveTo(x, yTop + h + 1);
+            ctx.lineTo(x, yBot - h - 1);
+            ctx.stroke();
+
+            // top arrowhead (points up)
+            ctx.beginPath();
+            ctx.moveTo(x, yTop);
+            ctx.lineTo(x - h / 2, yTop + h);
+            ctx.lineTo(x + h / 2, yTop + h);
+            ctx.closePath();
+            ctx.fill();
+
+            // bottom arrowhead (points down)
+            ctx.beginPath();
+            ctx.moveTo(x, yBot);
+            ctx.lineTo(x - h / 2, yBot - h);
+            ctx.lineTo(x + h / 2, yBot - h);
+            ctx.closePath();
+            ctx.fill();
+
+            if (label) {
+                ctx.font = 'bold 13px Inter, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(label, x + 10, (yTop + yBot) / 2 + 5);
+            }
+            ctx.restore();
+        }
+
+        function drawDashedRef(ctx, x1, y, x2, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(x1, y);
+            ctx.lineTo(x2, y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+
+        // Factory: creates a Chart.js plugin that draws a gap annotation
+        function makeGapPlugin(cfg) {
+            // cfg: { highVal, lowVal, label, color }
+            return {
+                id: 'gapAnnotation',
+                afterDraw(chart) {
+                    const ctx = chart.ctx;
+                    const yScale = chart.scales.y;
+                    const ca = chart.chartArea;
+
+                    const yHigh = yScale.getPixelForValue(cfg.highVal);
+                    const yLow = yScale.getPixelForValue(cfg.lowVal);
+
+                    // Dashed reference line at highVal across full chart area
+                    drawDashedRef(ctx, ca.left, yHigh, ca.right, cfg.color);
+
+                    // Double arrow on the right side inside chart area
+                    const arrowX = ca.right - 36;
+                    drawDoubleArrow(ctx, arrowX, yHigh, yLow, cfg.color, cfg.label);
+                }
+            };
+        }
+
+        // ── Slide data ────────────────────────────────────────────────────────
         const slides = [
             {
                 id: 1,
@@ -471,8 +558,8 @@
                 subtitle: 'Competitive Positioning Diagnosis',
                 author: 'Jason Kester Hanani',
                 meta: [
-                    '100,000 sample searches (2012-2013) from <a href="https://www.kaggle.com/competitions/expedia-personalized-sort/overview/description" target="_blank">Kaggle: Expedia Personalized Sort Challenge</a>',
-                    'Sample from full dataset from the following source: <a href="https://www.kaggle.com/competitions/expedia-personalized-sort/overview/description" target="_blank">Kaggle: Expedia Personalized Sort Challenge</a>',
+                    '100,000 sample searches (2012–2013) from <a href="https://www.kaggle.com/competitions/expedia-personalized-sort/overview/description" target="_blank">Kaggle: Expedia Personalized Sort Challenge</a>',
+                    'Sample drawn from the full multi-million-row dataset',
                     'April 18, 2026'
                 ]
             },
@@ -514,26 +601,15 @@
                             label: 'Booking Rate (%)',
                             data: [3.04, 2.89, 2.20],
                             backgroundColor: [
-                                'rgba(199, 62, 29, 0.8)',
-                                'rgba(199, 62, 29, 0.5)',
-                                'rgba(199, 62, 29, 0.3)',
+                                'rgba(199, 62, 29, 0.85)',
+                                'rgba(199, 62, 29, 0.55)',
+                                'rgba(199, 62, 29, 0.28)'
                             ],
-                            borderColor: 'var(--hanko-rust)',
                             borderWidth: 0
-                        },
-                        {
-                            label: 'Trend',
-                            data: [3.1, 2.95, 2.2],
-                            borderColor: 'rgba(199, 62, 29, 0.4)',
-                            borderWidth: 2,
-                            fill: false,
-                            type: 'line',
-                            tension: 0.4,
-                            pointRadius: 0,
-                            borderDash: [5, 5]
                         }]
                     },
-                    yAxisMax: 5
+                    yAxisMax: 5,
+                    gapAnnotation: { highVal: 3.04, lowVal: 2.20, label: 'Δ27%', color: '#F07F2E' }
                 }
             },
             {
@@ -580,7 +656,7 @@
                             </div>
                         </div>
                         <div class="highlight-box">
-                            Correlation to booking: <strong>+0.0289</strong><br>(negligible)
+                            Correlation to booking: <strong>+0.0289</strong><br>(negligible — price is not the lever)
                         </div>
                     `
                 },
@@ -593,19 +669,7 @@
                             label: 'Booking Rate (%)',
                             data: [3.38, 3.01, 2.55],
                             backgroundColor: 'rgba(240, 127, 46, 0.7)',
-                            borderColor: 'var(--fox-orange)',
                             borderWidth: 0
-                        },
-                        {
-                            label: 'Trend',
-                            data: [3.4, 3.0, 2.5],
-                            borderColor: 'rgba(240, 127, 46, 0.4)',
-                            borderWidth: 2,
-                            fill: false,
-                            type: 'line',
-                            tension: 0.4,
-                            pointRadius: 0,
-                            borderDash: [5, 5]
                         }]
                     },
                     yAxisMax: 5
@@ -626,19 +690,7 @@
                             label: 'Booking Rate (%)',
                             data: [13.37, 7.5, 5.8, 4.2, 3.5, 2.56],
                             backgroundColor: 'rgba(199, 62, 29, 0.8)',
-                            borderColor: 'var(--hanko-rust)',
                             borderWidth: 0
-                        },
-                        {
-                            label: 'Trend',
-                            data: [13.5, 8.5, 5.5, 4.0, 3.0, 2.5],
-                            borderColor: 'rgba(199, 62, 29, 0.4)',
-                            borderWidth: 2,
-                            fill: false,
-                            type: 'line',
-                            tension: 0.4,
-                            pointRadius: 0,
-                            borderDash: [5, 5]
                         }]
                     },
                     yAxisMax: 15
@@ -662,7 +714,7 @@
                             </div>
                         </div>
                         <div class="highlight-box">
-                            Position elasticity (5.22x) is <strong>stronger than click elasticity (4.53x)</strong>. Position matters more for booking than for visibility.
+                            Booking elasticity (5.22x) is <strong>stronger than click elasticity (4.53x)</strong>. Position matters more for conversion than for visibility.
                         </div>
                     `
                 }
@@ -715,7 +767,7 @@
                         </table>
                     </div>
                     <div class="highlight-box">
-                        Only 39% of luxury hotels beat their promise. 31% fail expectations. Luxury buyers abandon when reality doesn't match the promise.
+                        Only <strong>39%</strong> of luxury hotels beat their promise. <strong>31% fail expectations.</strong> Luxury buyers abandon when reality doesn't match the star rating.
                     </div>
                 `
             },
@@ -729,27 +781,19 @@
                     type: 'chart',
                     chartType: 'bar',
                     data: {
-                        labels: ['New Visitor', 'Returning Visitor'],
+                        labels: ['New Visitor', 'Returning'],
                         datasets: [{
                             label: 'Booking Rate (%)',
                             data: [2.74, 3.66],
-                            backgroundColor: ['rgba(199, 62, 29, 0.5)', 'rgba(41, 92, 39, 0.8)'],
-                            borderColor: 'var(--hanko-rust)',
+                            backgroundColor: [
+                                'rgba(199, 62, 29, 0.45)',
+                                'rgba(41, 92, 39, 0.8)'
+                            ],
                             borderWidth: 0
-                        },
-                        {
-                            label: 'Trend',
-                            data: [2.7, 3.7],
-                            borderColor: 'rgba(199, 62, 29, 0.4)',
-                            borderWidth: 2,
-                            fill: false,
-                            type: 'line',
-                            tension: 0.4,
-                            pointRadius: 0,
-                            borderDash: [5, 5]
                         }]
                     },
-                    yAxisMax: 5
+                    yAxisMax: 5,
+                    gapAnnotation: { highVal: 3.66, lowVal: 2.74, label: '1.34x', color: '#295C27' }
                 },
                 right: {
                     type: 'text',
@@ -793,27 +837,17 @@
                         </div>
                     </div>
                     <div class="content-text">
-                        <p>Click rates are flat across all segments—Expedia's ranking algorithm surfaces relevant hotels equally well. The conversion collapse happens <strong>after the click</strong>.</p>
-                        <p style="margin-top: 20px;"><strong>This means:</strong> Ranking quality is NOT the problem. Quality trust and position are.</p>
+                        <p>Click rates are flat across all segments — Expedia's ranking algorithm surfaces relevant hotels equally well for every segment. The conversion collapse happens <strong>after the click</strong>.</p>
+                        <p><strong>This means:</strong> Ranking quality is NOT the problem. Quality trust and position are the real levers.</p>
                     </div>
                 `
             },
             {
                 id: 9,
                 type: 'content',
-                layout: 'single',
+                layout: 'rootcause',
                 title: 'Root Cause: Luxury Quality Gap',
-                subtitle: 'Why 27% lower booking rate',
-                content: `
-                    <div class="content-text">
-                        <ul class="content-list">
-                            <li><strong>Budget segment:</strong> +41% gap (beats promise) → 78% beat promise → 3.04% booking rate (HIGHEST)</li>
-                            <li><strong>Mid segment:</strong> +18% gap (beats promise) → 73% beat promise → 2.89% booking rate</li>
-                            <li><strong>Luxury segment:</strong> -2.3% gap (fails promise) → only 39% beat promise → 2.20% booking rate (LOWEST)</li>
-                        </ul>
-                        <p style="margin-top: 20px;"><strong>The mechanism:</strong> Luxury buyers have elevated expectations. A 4.30★ hotel that delivers 4.20★ feels like a failure, triggering abandonment.</p>
-                    </div>
-                `
+                subtitle: 'Why luxury booking rate is 27% lower than Budget'
             },
             {
                 id: 10,
@@ -824,13 +858,13 @@
                 content: `
                     <div class="content-text">
                         <ul class="content-list">
-                            <li><strong>Action 1:</strong> Identify 4.3★ luxury hotels that deliver <4.0★ (promise-delivery gap)</li>
+                            <li><strong>Action 1:</strong> Identify 4.3★ luxury hotels that deliver &lt;4.0 review score (promise-delivery gap)</li>
                             <li><strong>Action 2:</strong> Investigate root causes: outdated photos, missing amenities, poor maintenance</li>
                             <li><strong>Action 3:</strong> Remove misaligned listings or require improvement before prominence</li>
-                            <li><strong>Action 4:</strong> Prioritize verified buyer ratings to build trust</li>
+                            <li><strong>Action 4:</strong> Prioritize verified buyer ratings to build trust signals</li>
                         </ul>
                         <div class="highlight-box">
-                            <strong>Expected Impact:</strong> Close -2.3% gap to -1.0% → 0.6pp lift in luxury booking rate
+                            <strong>Expected Impact:</strong> Close -2.3% gap to -1.0% → ~0.6pp lift in luxury booking rate
                         </div>
                     </div>
                 `
@@ -839,7 +873,7 @@
                 id: 11,
                 type: 'content',
                 layout: 'single',
-                title: 'Recommendation 2: Reallocate Effort to High-Impact Levers',
+                title: 'Recommendation 2: Reallocate to High-Impact Levers',
                 subtitle: 'Stop optimizing price. Start optimizing quality & position.',
                 content: `
                     <div class="content-text">
@@ -861,10 +895,10 @@
                 content: `
                     <div class="content-text">
                         <ul class="content-list">
-                            <li><strong>Phase 1 (Week 1-2):</strong> Audit 4.3★+ luxury hotels; flag promise-delivery gaps >0.2★</li>
-                            <li><strong>Phase 2 (Week 3-4):</strong> Investigate root causes; require improvements or delist misaligned properties</li>
-                            <li><strong>Phase 3 (Week 5-6):</strong> Launch quality-based ranking experiment; measure booking lift</li>
-                            <li><strong>Phase 4 (Week 7-8):</strong> Roll out verified buyer ratings for luxury segment</li>
+                            <li><strong>Phase 1 (Week 1–2):</strong> Audit 4.3★+ luxury hotels; flag promise-delivery gaps &gt;0.2★</li>
+                            <li><strong>Phase 2 (Week 3–4):</strong> Investigate root causes; require improvements or delist misaligned properties</li>
+                            <li><strong>Phase 3 (Week 5–6):</strong> Launch quality-based ranking experiment; measure booking lift</li>
+                            <li><strong>Phase 4 (Week 7–8):</strong> Roll out verified buyer ratings for luxury segment</li>
                         </ul>
                         <div class="highlight-box">
                             <strong>Measurement:</strong> Track luxury booking rate lift from baseline 2.20%
@@ -902,7 +936,7 @@
                     content: `
                         <div class="content-text">
                             <p><strong>Primary driver:</strong> Narrow quality gap from -2.3% to -1.0% (0.6pp lift)</p>
-                            <p><strong>Secondary driver:</strong> Improved ranking for quality signals (additional 0.3pp lift expected)</p>
+                            <p><strong>Secondary driver:</strong> Improved ranking for quality signals (additional ~0.3pp lift expected)</p>
                             <p><strong>Measurement period:</strong> 8-week post-implementation monitoring</p>
                             <p><strong>Success threshold:</strong> Achieve 2.28% luxury booking rate (3% lift minimum)</p>
                         </div>
@@ -939,31 +973,85 @@
                             <li><strong>Position (5.22x):</strong> Highest ROI lever for conversion improvement</li>
                             <li><strong>Quality gap (-2.3% luxury):</strong> Root cause of 27% lower luxury booking rate</li>
                             <li><strong>Experience (1.34x):</strong> Trust matters more than visibility for returning visitors</li>
-                            <li><strong>Price (+0.0289):</strong> Negligible impact; don't optimize</li>
-                            <li><strong>Ranking quality (4-5%):</strong> Equal across segments; problem is post-click conversion</li>
+                            <li><strong>Price (+0.0289):</strong> Negligible impact — don't optimize</li>
+                            <li><strong>Ranking quality (4–5%):</strong> Equal across segments; problem is post-click conversion</li>
                         </ul>
                         <div class="highlight-box">
-                            <strong>Strategic Priority:</strong> Fix luxury quality gap, then optimize position-based ranking, then build trust signals. Ignore price optimization.
+                            <strong>Strategic Priority:</strong> Fix luxury quality gap → optimize position-based ranking → build trust signals. Ignore price optimization.
                         </div>
                     </div>
                 `
             }
         ];
 
+        // ── Renderer ──────────────────────────────────────────────────────────
         let currentSlide = 0;
         let chartInstances = {};
 
         function destroyCharts() {
-            Object.values(chartInstances).forEach(chart => {
-                if (chart) chart.destroy();
-            });
+            Object.values(chartInstances).forEach(c => c && c.destroy());
             chartInstances = {};
         }
 
+        function renderRootCause() {
+            return `
+                <div class="root-cause-grid">
+                    <div class="segment-card budget">
+                        <div class="seg-name">Budget</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Promise</span>
+                            <span class="seg-val">2.40★</span>
+                        </div>
+                        <div class="seg-arrow up">↑</div>
+                        <div class="seg-gap pos">+41% gap</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Delivers</span>
+                            <span class="seg-val">3.39 rating</span>
+                        </div>
+                        <div class="seg-divider"></div>
+                        <div class="seg-booking-label">Booking Rate</div>
+                        <div class="seg-booking-val pos">3.04%</div>
+                    </div>
+                    <div class="segment-card mid">
+                        <div class="seg-name">Mid</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Promise</span>
+                            <span class="seg-val">3.34★</span>
+                        </div>
+                        <div class="seg-arrow up">↑</div>
+                        <div class="seg-gap pos">+18% gap</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Delivers</span>
+                            <span class="seg-val">3.97 rating</span>
+                        </div>
+                        <div class="seg-divider"></div>
+                        <div class="seg-booking-label">Booking Rate</div>
+                        <div class="seg-booking-val pos">2.89%</div>
+                    </div>
+                    <div class="segment-card luxury">
+                        <div class="seg-name">Luxury</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Promise</span>
+                            <span class="seg-val">4.30★</span>
+                        </div>
+                        <div class="seg-arrow down">↓</div>
+                        <div class="seg-gap neg">−2.3% gap</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Delivers</span>
+                            <span class="seg-val">4.20 rating</span>
+                        </div>
+                        <div class="seg-divider"></div>
+                        <div class="seg-booking-label">Booking Rate</div>
+                        <div class="seg-booking-val neg">2.20%</div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderSlide(slideIndex) {
+            destroyCharts();
             const slide = slides[slideIndex];
             const container = document.getElementById('slides-container');
-
             let html = '';
 
             if (slide.type === 'title') {
@@ -975,89 +1063,80 @@
                             <div class="divider"></div>
                             ${slide.author ? `<div class="author">${slide.author}</div>` : ''}
                             <div class="meta">
-                                ${slide.meta.map(item => `<div class="meta-item">${item}</div>`).join('')}
+                                ${slide.meta.map(m => `<div class="meta-item">${m}</div>`).join('')}
                             </div>
                         </div>
                     </div>
                 `;
             } else {
-                html = `<div class="slide content-slide">
-                    <div class="slide-inner">
-                        <div class="slide-header">
-                            <h2>${slide.title}</h2>
-                            ${slide.subtitle ? `<div class="subtitle">${slide.subtitle}</div>` : ''}
-                        </div>
-                `;
+                let body = '';
 
                 if (slide.layout === 'two-column') {
-                    html += `<div class="layout-two-column">`;
+                    body = `<div class="layout-two-column">`;
+                    body += `<div class="column">`;
+                    if (slide.left.type === 'text') body += slide.left.content;
+                    else body += `<div class="chart-wrapper" id="chart-${slideIndex}-left"></div>`;
+                    body += `</div>`;
+                    body += `<div class="column">`;
+                    if (slide.right.type === 'text') body += slide.right.content;
+                    else body += `<div class="chart-wrapper" id="chart-${slideIndex}-right"></div>`;
+                    body += `</div></div>`;
 
-                    if (slide.left) {
-                        html += `<div class="column">`;
-                        if (slide.left.type === 'text') {
-                            html += slide.left.content;
-                        } else if (slide.left.type === 'chart') {
-                            html += `<div class="chart-wrapper" id="chart-${slideIndex}-left"></div>`;
-                        }
-                        html += `</div>`;
-                    }
+                } else if (slide.layout === 'rootcause') {
+                    body = renderRootCause();
 
-                    if (slide.right) {
-                        html += `<div class="column">`;
-                        if (slide.right.type === 'text') {
-                            html += slide.right.content;
-                        } else if (slide.right.type === 'chart') {
-                            html += `<div class="chart-wrapper" id="chart-${slideIndex}-right"></div>`;
-                        }
-                        html += `</div>`;
-                    }
-
-                    html += `</div>`;
-                } else if (slide.layout === 'single') {
-                    html += slide.content;
+                } else {
+                    body = `<div class="layout-single">${slide.content}</div>`;
                 }
 
-                html += `</div></div>`;
+                html = `
+                    <div class="slide content-slide">
+                        <div class="slide-inner">
+                            <div class="slide-header">
+                                <h2>${slide.title}</h2>
+                                ${slide.subtitle ? `<div class="subtitle">${slide.subtitle}</div>` : ''}
+                            </div>
+                            ${body}
+                        </div>
+                    </div>
+                `;
             }
 
             container.innerHTML = html;
             document.getElementById('current-slide').textContent = slideIndex + 1;
             document.getElementById('total-slides').textContent = slides.length;
-
             document.getElementById('prev-btn').disabled = slideIndex === 0;
             document.getElementById('next-btn').disabled = slideIndex === slides.length - 1;
 
-            // Destroy old charts
-            destroyCharts();
-
-            // Render new charts after DOM is updated
+            // Render charts after DOM settles
             setTimeout(() => {
                 if (slide.layout === 'two-column') {
-                    if (slide.left && slide.left.type === 'chart') {
+                    if (slide.left && slide.left.type === 'chart')
                         renderChart(slideIndex, 'left', slide.left);
-                    }
-                    if (slide.right && slide.right.type === 'chart') {
+                    if (slide.right && slide.right.type === 'chart')
                         renderChart(slideIndex, 'right', slide.right);
-                    }
                 }
             }, 50);
         }
 
         function renderChart(slideIndex, position, chartConfig) {
-            const canvasId = `chart-${slideIndex}-${position}`;
-            const container = document.getElementById(canvasId);
+            const id = `chart-${slideIndex}-${position}`;
+            const wrapper = document.getElementById(id);
+            if (!wrapper) return;
 
-            if (!container) return;
-
-            // Create canvas if it doesn't exist
-            let canvas = document.querySelector(`#${canvasId} canvas`);
+            let canvas = wrapper.querySelector('canvas');
             if (!canvas) {
                 canvas = document.createElement('canvas');
-                container.appendChild(canvas);
+                wrapper.appendChild(canvas);
             }
 
             const ctx = canvas.getContext('2d');
             const yMax = chartConfig.yAxisMax || 15;
+
+            const plugins = [];
+            if (chartConfig.gapAnnotation) {
+                plugins.push(makeGapPlugin(chartConfig.gapAnnotation));
+            }
 
             const chart = new Chart(ctx, {
                 type: chartConfig.chartType,
@@ -1065,10 +1144,11 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: { right: 60 }
+                    },
                     plugins: {
-                        legend: {
-                            display: false
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         y: {
@@ -1079,27 +1159,25 @@
                                 drawBorder: false
                             },
                             ticks: {
-                                font: { size: 12, family: 'Inter' },
-                                color: 'rgba(26, 26, 26, 0.6)',
-                                padding: 10
+                                font: { size: 11, family: 'Inter' },
+                                color: 'rgba(26, 26, 26, 0.55)',
+                                padding: 8
                             }
                         },
                         x: {
-                            grid: {
-                                display: false,
-                                drawBorder: false
-                            },
+                            grid: { display: false, drawBorder: false },
                             ticks: {
-                                font: { size: 12, family: 'Inter' },
-                                color: 'rgba(26, 26, 26, 0.6)',
-                                padding: 10
+                                font: { size: 11, family: 'Inter' },
+                                color: 'rgba(26, 26, 26, 0.55)',
+                                padding: 8
                             }
                         }
                     }
-                }
+                },
+                plugins: plugins
             });
 
-            chartInstances[canvasId] = chart;
+            chartInstances[id] = chart;
         }
 
         function nextSlide() {
@@ -1116,7 +1194,7 @@
             }
         }
 
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.key === 'ArrowRight') nextSlide();
             if (e.key === 'ArrowLeft') previousSlide();
         });
