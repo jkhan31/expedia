@@ -711,15 +711,26 @@ Step 6: Post to social
 ## Out of Scope (Future Iterations)
 
 ### Phase 2 (Future) — Enhanced Learning
+
+**High Priority:**
+- [ ] **Automated Feedback Loop Integrations** (Plug & Play)
+  - **LinkedIn API:** Auto-pull engagement metrics (impressions, reactions, comments) for each post
+  - **Instagram API:** Auto-pull carousel performance (likes, saves, shares, reach)
+  - **Twitter API:** Auto-pull thread performance (retweets, likes, replies)
+  - **Workflow:** Post variant → API auto-logs metrics → System prompts user for reflection only
+  - **Impact:** Removes manual data entry friction, keeps learning loop alive
+  - **Benefit:** User does 1 minute reflection (insights) instead of 3 minutes (metrics + insights)
+
 - [ ] Insight extraction layer (raw analysis → structured insights → config)
   - **Why:** Most users struggle to extract insights from their own work
   - **How:** Interactive prompts guide from raw findings → carousel-ready insights
   - **Impact:** Makes system truly end-to-end (thinking → distribution)
+
+**Medium Priority:**
 - [ ] Claude API integration for truly unique LLM-generated copy
 - [ ] Video generation (TikTok/Reels animation)
 - [ ] Hashtag optimization per platform
 - [ ] Scheduled posting integration
-- [ ] Analytics dashboard (engagement tracking)
 - [ ] A/B testing framework
 - [ ] Team collaboration features
 
@@ -1064,7 +1075,117 @@ That's the leverage.
 
 ---
 
-**Document Status:** ✅ Production Ready  
+## Appendix G: Automated Feedback Loop Design (Phase 2 Enhancement)
+
+### The Problem with Manual Reflection
+Current system requires user to manually track:
+- Which variant was posted? (manual lookup)
+- How many impressions? (manual check platform)
+- How many engagements? (manual count)
+- What surprised you? (easy, reflection only)
+
+Friction compounds: After week 2, manual data entry kills the behavior.
+
+### The Solution: Plug & Play Platform Integrations
+
+**The Vision:**
+```
+User posts variant on LinkedIn/Instagram/Twitter
+    ↓
+Platform API auto-pulls metrics (impressions, engagements, etc.)
+    ↓
+System logs automatically to memory
+    ↓
+User gets 1-minute reflection prompt (thinking only, no data entry)
+    ↓
+Reflection + auto-fetched metrics = complete learning cycle
+```
+
+**Current effort:** 3 min/week (1 min reflection + 2 min data lookup)  
+**With automation:** 1 min/week (reflection only)  
+**Compound impact:** Over 12 months, 100+ hours of time back
+
+### Implementation Strategy (Phase 2a: LinkedIn First)
+
+**Step 1: LinkedIn API Integration**
+```python
+class LinkedInMetricsCollector:
+  - Connect to LinkedIn API
+  - Poll every 24 hours for new posts from account
+  - Match post content to variant in memory (timestamp + text match)
+  - Auto-log: impressions, reactions, comments, shares
+  - Error handling: If API fails, system prompts for manual entry
+```
+
+**Step 2: Automated Logging**
+```json
+{
+  "carousel_1_week_2": {
+    "posted": "2026-04-30T14:32:00",
+    "variant": "question-based",
+    "platform": "linkedin",
+    "metrics_auto_fetched": {
+      "impressions": 420,
+      "engagements": 45,
+      "engagement_rate": 0.107,
+      "comment_count": 12,
+      "comment_themes": ["why", "methodology"]
+    }
+  }
+}
+```
+
+**Step 3: Reduced Friction Reflection Prompt**
+```
+Your carousel 1 LinkedIn post performed:
+  Impressions: 420 (↑ 24% from Week 1)
+  Engagements: 45 (↑ 150% from Week 1)
+
+Quick reflection (1 min, type brief answers):
+
+1. What surprised you?
+   [1-line text]
+
+2. What pattern do you see?
+   [1-line text]
+
+3. What will you test next week?
+   [1-line text]
+```
+
+### Phase 2 Roadmap
+
+**2a (MVP):** LinkedIn API only
+- Easiest to build
+- Most valuable for knowledge workers
+- User posts LinkedIn → Auto-logs → User reflects (1 min)
+
+**2b (If 2a works):** Add Instagram
+- Instagram Business API for carousel metrics
+- Slide-level engagement data if available
+
+**2c (Later):** Add Twitter
+- Twitter API v2 for thread performance
+- Optional, platform-dependent
+
+### Why Automation Changes Everything
+
+**Without automation:**
+- User: "I'll log metrics every week"
+- Reality (Week 3): "I'm too tired, I'll skip this week"
+- Result: Learning loop breaks, system becomes just automation
+
+**With automation:**
+- System: "Here's your metrics. What do you think?"
+- User: "I see the pattern - questions work better"
+- Result: Learning loop stays alive, behavior compounds
+
+The difference between a tool and a system is whether the learning loop survives contact with real life.
+
+---
+
+**Document Status:** ✅ Production Ready (Phase 1)  
+**Phase 2 Ready:** ✅ Automated Feedback Loop designed, ready for implementation
 **Last Updated:** April 18, 2026  
 **Portfolio Status:** ✅ Case study complete, validated on real project
 **Next Review:** After Expedia 4-week posting cycle (May 2026)  
