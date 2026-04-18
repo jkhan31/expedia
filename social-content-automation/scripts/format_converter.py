@@ -81,8 +81,11 @@ class FormatConverter:
                 # Save in target format
                 if target_format.lower() == 'jpg':
                     img_converted = img_converted.convert('RGB')
+                    save_format = 'JPEG'
+                else:
+                    save_format = target_format.upper()
 
-                img_converted.save(target_path, format=target_format.upper())
+                img_converted.save(target_path, format=save_format)
                 log_progress(f"Converted: {target_filename}")
 
             except Exception as e:

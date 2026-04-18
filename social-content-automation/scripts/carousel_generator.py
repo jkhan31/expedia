@@ -181,6 +181,7 @@ class CarouselSlideGenerator:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         if format.lower() == "jpg":
             image = image.convert('RGB')
+            format = "JPEG"
         image.save(output_path, format=format.upper())
         log_progress(f"Saved slide: {output_path}")
 

@@ -1,0 +1,161 @@
+{
+  "project_name": "Expedia Marketplace Analysis",
+  "date": "2026-04-18",
+  "project_type": "data_analysis",
+  "description": "Why luxury hotels convert 27% less on Expedia—and what data reveals about the real drivers",
+  "website_link": "https://jasonkhanani.com/expedia-analysis",
+  "carousels": [
+    {
+      "carousel_number": 1,
+      "title": "The Luxury Hotel Problem",
+      "subtitle": "Why luxury underperforms on Expedia",
+      "key_insight": "Luxury hotels book 27% less often than budget hotels. But the reason isn't what you'd expect.",
+      "cta_message": "Read the full case study",
+      "cta_button_text": "Learn More",
+      "insights": [
+        {
+          "headline": "The Booking Rate Gap",
+          "metric_label": "Luxury vs Budget",
+          "metric_value": "2.20% vs 3.04%",
+          "description": "Luxury segment underperforms significantly on Expedia's marketplace"
+        },
+        {
+          "headline": "Market Opportunity",
+          "metric_label": "Lost Revenue",
+          "metric_value": "$50M+",
+          "description": "Annual opportunity from improving luxury conversion rates"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Booking Rate Gap",
+          "value": "27% lower"
+        },
+        {
+          "label": "Sample Size",
+          "value": "100k searches analyzed"
+        }
+      ],
+      "takeaway": "Understanding the root cause unlocks a massive revenue opportunity"
+    },
+    {
+      "carousel_number": 2,
+      "title": "Myth: Price Matters",
+      "subtitle": "Data proves price optimization won't help",
+      "key_insight": "Most people assume luxury hotels book less because they're overpriced. The data says otherwise.",
+      "cta_message": "See what actually drives bookings",
+      "cta_button_text": "Continue Reading",
+      "insights": [
+        {
+          "headline": "The Price Analysis",
+          "metric_label": "Booking rate by price",
+          "metric_value": "0.83pp difference",
+          "description": "Negligible difference between underpriced and overpriced hotels"
+        },
+        {
+          "headline": "Correlation Signal",
+          "metric_label": "Price correlation",
+          "metric_value": "+0.0289",
+          "description": "Statistically irrelevant relationship between price and conversions"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Price Impact",
+          "value": "Negligible"
+        },
+        {
+          "label": "Recommendation",
+          "value": "Stop optimizing price"
+        }
+      ],
+      "takeaway": "Price is already at equilibrium. Focus effort elsewhere for ROI."
+    },
+    {
+      "carousel_number": 3,
+      "title": "Reality: Ranking Dominates",
+      "subtitle": "Position in search results is the strongest conversion lever",
+      "key_insight": "Where a hotel appears matters 5x more than you'd think",
+      "cta_message": "Discover the ranking impact",
+      "cta_button_text": "See the Data",
+      "insights": [
+        {
+          "headline": "Position Effect",
+          "metric_label": "Position 1 vs Position 10",
+          "metric_value": "13.37% vs 2.56%",
+          "description": "Booking rate drops 5.22x from top to bottom positions"
+        },
+        {
+          "headline": "Trust Signal",
+          "metric_label": "Booking elasticity",
+          "metric_value": "5.22x stronger",
+          "description": "Position matters more for post-click conversion than clicks themselves"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Conversion Difference",
+          "value": "5.22x"
+        },
+        {
+          "label": "Implication",
+          "value": "Position = Trust Signal"
+        }
+      ],
+      "takeaway": "The ranking algorithm should optimize for conversion and quality signals, not just relevance"
+    },
+    {
+      "carousel_number": 4,
+      "title": "The Quality Trust Gap",
+      "subtitle": "Why luxury travelers abandon after clicking",
+      "key_insight": "Luxury buyers expect 4.30★ hotels but get 4.20★. The gap kills conversions.",
+      "cta_message": "Explore the full analysis",
+      "cta_button_text": "View Case Study",
+      "insights": [
+        {
+          "headline": "Expectation vs Reality",
+          "metric_label": "Luxury Quality Gap",
+          "metric_value": "Promise 4.30★ → Deliver 4.20★",
+          "description": "Luxury hotels underdeliver relative to stated quality. Budget hotels exceed expectations."
+        },
+        {
+          "headline": "Segment Comparison",
+          "metric_label": "Promise vs Delivery",
+          "metric_value": "Budget: +41% | Luxury: -2.3%",
+          "description": "Budget travelers pleasantly surprised. Luxury travelers disappointed."
+        },
+        {
+          "headline": "Experience Matters",
+          "metric_label": "Returning vs New Visitors",
+          "metric_value": "3.66% vs 2.74%",
+          "description": "Returning visitors book 1.34x more often. Trust is the differentiator."
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Root Cause",
+          "value": "Quality Misalignment"
+        },
+        {
+          "label": "Expected Lift",
+          "value": "0.6pp from fix"
+        }
+      ],
+      "takeaway": "Fix the quality gap and trust signals, and luxury conversion recovers. This is the highest-leverage lever."
+    }
+  ],
+  "hashtags": [
+    "dataanalysis",
+    "ecommerce",
+    "conversion",
+    "hospitality",
+    "casestudy",
+    "marketplace"
+  ],
+  "platforms_enabled": [
+    "linkedin",
+    "instagram",
+    "twitter",
+    "web"
+  ]
+}
