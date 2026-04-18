@@ -42,10 +42,10 @@ This notebook explores:
 - Trust signals (ratings, reviews) as decision drivers
 - Market segmentation and user behavior patterns
 
-**Data:** 10,000 rows sampled from train.csv  
+**Data:** 100,000 rows sampled from train.csv (seed=42)  
 **Period:** 2012–2013  
-**Searches:** 3,542 unique  
-**Properties:** 8,390 unique
+**Searches:** 19,406 unique  
+**Properties:** 42,870 unique
 
 ---
 
@@ -76,15 +76,9 @@ print("✓ Libraries loaded")
 
 ```python
 # Cell 3: Code
-# Load first 100k rows from train.csv and sample 10k for analysis
-print("Loading train.csv (first 100k rows)...")
-train_path = '../../data/train.csv'
-df_train = pd.read_csv(train_path, nrows=100000)
-print(f"Loaded: {len(df_train):,} rows")
-
-print("\nSampling 10,000 rows (seed=42 for reproducibility)...")
-np.random.seed(42)
-df = df_train.sample(n=10000, random_state=42)
+# Load pre-sampled 100k dataset
+print("Loading sample.csv (100k rows, pre-sampled with seed=42)...")
+df = pd.read_csv('../data/sample.csv')
 
 print(f"\nDataset shape: {df.shape}")
 print(f"Rows: {len(df):,}")
@@ -94,7 +88,7 @@ print(f"Unique properties: {df['prop_id'].nunique():,}")
 print(f"Unique sites: {df['site_id'].nunique()}")
 ```
 
-Expected output: 10,000 rows × 54 columns, 3,542 searches, 8,390 properties
+Expected output: 100,000 rows × 54 columns, 19,406 searches, 42,870 properties
 
 - [ ] **Step 4: Verify outcome data exists**
 
@@ -157,8 +151,8 @@ git commit -m "task: setup notebook, load train.csv, verify outcome data"
 **Files:**
 - Modify: `analysis/notebooks/2026-04-18-marketplace-analysis.ipynb`
 
-**Background:** Position column already exists in data. We'll verify it and add two derived columns:
-1. **Competitiveness Score**: Price vs competitor average (handle outliers & NaNs)
+**Background:** The position column in the data has gaps (positions 5, 11, 17, 23 missing), likely from filtering or A/B testing. We'll regenerate it as true ranking position. Then add two derived columns:
+1. **Competitiveness Score**: Percentage difference vs competitors (from comp*_rate_percent_diff)
 2. **Market Segment**: Budget/Mid/Luxury classification (based on price & rating)
 
 **Steps:**
@@ -169,16 +163,16 @@ git commit -m "task: setup notebook, load train.csv, verify outcome data"
 # Cell 6: Markdown
 ## Part 2: Data Enrichment & Validation
 
-### 2.1 Position Column Verification
+### 2.1 Position Column Regeneration
 
-The dataset already includes a `position` column. We'll verify it represents ranking position.
+The dataset includes a `position` column with gaps (positions 5, 11, 17, 23 missing), indicating it may be from filtered/A/B test data. We'll regenerate true ranking position as row order within each search.
 
 ### 2.2 Competitiveness Score
 
-We'll create a competitiveness metric:
-- `competitiveness_score = price_usd - avg(competitor prices)`
-- Positive = overpriced, Negative = underpriced
-- Capped at ±$1000 to handle outliers
+We'll calculate price competitiveness relative to competitors:
+- **Source:** comp*_rate_percent_diff (actual % difference vs competitors)
+- **Metric:** Average % difference across all available competitors
+- Positive = overpriced vs competitors, Negative = underpriced
 
 **Why:** Understand if hotels are competitively positioned relative to direct competitors.
 
@@ -192,68 +186,66 @@ We'll classify hotels into segments based on price and rating:
 **Why:** Enable segment-level analysis of competitive dynamics and booking behavior.
 ```
 
-- [ ] **Step 2: Verify position column**
+- [ ] **Step 2: Regenerate position column**
 
 ```python
 # Cell 7: Code
-print("Position Column Verification:")
-print(f"Position exists: {'position' in df.columns}")
+print("Regenerating Position Column (True Ranking Position)...")
+print(f"Before: position range {df['position'].min():.0f}–{df['position'].max():.0f}')
+
+# Recalculate position as row order within each search
+df['position'] = df.groupby('srch_id').cumcount() + 1
+
+print(f'After: position range {df["position"].min():.0f}–{df["position"].max():.0f}')
 print(f"\nPosition distribution:")
 print(df['position'].value_counts().sort_index().head(10))
 
 print(f"\nPosition stats by search:")
 position_stats = df.groupby('srch_id')['position'].agg(['count', 'min', 'max', 'mean'])
 print(position_stats.describe())
-
-print(f"\n✓ Position column confirmed (range: {df['position'].min()}–{df['position'].max()})")
 ```
 
-Expected: Position values 1–26, mostly 1–5. Confirms ranking position.
+Expected: Position 1–16, with roughly 20k rows at each position (10k unique searches × ~5 hotels each).
 
 - [ ] **Step 3: Add competitiveness score (with outlier handling)**
 
 ```python
 # Cell 8: Code
-# Calculate competitiveness score: price - avg competitor price
+# Calculate competitiveness score: average % difference vs competitors
 def calculate_competitiveness(row):
     """
-    Calculate price competitiveness: how much over/under priced vs competitors
+    Calculate price competitiveness: % difference vs competitors
+    Uses comp*_rate_percent_diff (actual % difference with Expedia as denominator)
     Returns:
       Positive = overpriced relative to competitors
       Negative = underpriced
       NaN = no competitor data
     """
-    comp_rates = []
+    comp_diffs = []
     for i in range(1, 9):  # comp1 through comp8
-        rate = row[f'comp{i}_rate']
-        if pd.notna(rate) and rate > 0:  # Exclude invalid rates
-            comp_rates.append(rate)
+        diff = row[f'comp{i}_rate_percent_diff']
+        if pd.notna(diff):
+            comp_diffs.append(diff)
     
-    if len(comp_rates) == 0:
-        return np.nan  # No valid competitors
+    if len(comp_diffs) == 0:
+        return np.nan  # No competitor data
     
-    avg_competitor_price = np.mean(comp_rates)
-    score = row['price_usd'] - avg_competitor_price
-    
-    # Cap extreme outliers (handle data errors)
-    if score > 1000:
-        return 1000
-    elif score < -1000:
-        return -1000
-    return score
+    # Average percentage difference across available competitors
+    return np.mean(comp_diffs)
 
 df['competitiveness_score'] = df.apply(calculate_competitiveness, axis=1)
 
 print("Competitiveness Score Calculated:")
 print(f"Non-NaN rows: {df['competitiveness_score'].notna().sum():,} ({df['competitiveness_score'].notna().sum() / len(df) * 100:.1f}%)")
-print(f"Mean: ${df['competitiveness_score'].mean():.2f}")
-print(f"Median: ${df['competitiveness_score'].median():.2f}")
-print(f"Std: ${df['competitiveness_score'].std():.2f}")
-print(f"\nRange (after outlier capping):")
-print(f"  Most underpriced: ${df['competitiveness_score'].min():.2f}")
-print(f"  Most overpriced: ${df['competitiveness_score'].max():.2f}")
-print(f"\nDistribution:")
-print(df['competitiveness_score'].describe())
+print(f"Mean: {df['competitiveness_score'].mean():.2f}%")
+print(f"Median: {df['competitiveness_score'].median():.2f}%")
+print(f"Std: {df['competitiveness_score'].std():.2f}%")
+print(f"\nRange:")
+print(f"  Most underpriced: {df['competitiveness_score'].min():.2f}%")
+print(f"  Most overpriced: {df['competitiveness_score'].max():.2f}%")
+print(f"\nInterpretation:")
+print(f"  Negative value = cheaper than competitors")
+print(f"  Positive value = more expensive than competitors")
 ```
 
 Expected: ~65% with competitor data, mean near $0 (some underpriced, some overpriced).
