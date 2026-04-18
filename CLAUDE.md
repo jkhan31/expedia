@@ -133,12 +133,29 @@ Before accepting any analysis insight or recommendation, question it:
 
 ## 10. Analysis & Data Guidelines (This Project)
 
-**Data-driven analysis without causal claims.**
+**Data-driven analysis WITH causal measurement (outcome data available!).**
 
-- All six analyses are in a Jupyter notebook for inspection and learning
-- No outcome data (no click_bool/booking_bool) → can't claim what drives bookings
-- All findings framed as: "Data shows X, which suggests Y, but we'd need outcome data to prove Z"
-- Recommendations are diagnostic (tools, transparency, A/B test ideas) not prescriptive (change X to Y)
-- Understanding checkpoints after each analysis block—pause and validate interpretation
-- Python code for data processing (readable, documented), visualizations are professional-grade
-- Charts saved as PNG files for final deck
+**DISCOVERY:** Dataset includes click_bool, booking_bool, and gross_bookings_usd. This allows direct measurement of what drives conversions, not just correlation.
+
+**Key analyses (now with outcome data):**
+- Funnel analysis: Impression → Click → Booking rates
+- Ranking impact: Direct measurement of position effect on clicks/bookings
+- Quality impact: Does quality actually drive conversions?
+- Price impact: Elasticity of demand vs competitors
+- User behavior: Do different segments convert differently?
+
+**Framing changes:**
+- OLD: "Data shows X, which suggests Y, but we'd need outcome data to prove Z"
+- NEW: "Data shows position 1 gets X% booking rate vs position 2 gets Y% — here's the impact"
+
+**Recommendations are now:**
+- Data-backed (proven by conversion data, not hypothetical)
+- Quantified (specific impact numbers)
+- Actionable (we know what levers matter most)
+
+**Still maintain:**
+- Understanding checkpoints after each analysis
+- Collaborative learning (explain methodology, not just results)
+- Python code readable and documented
+- Professional-grade visualizations
+- Charts saved as PNG files for deck
