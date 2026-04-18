@@ -51,14 +51,19 @@ The **Social Content Generator** is infrastructure for converting research and p
 
 ## Product Vision
 
-**"Turn thinking into distribution automatically. Consistency + feedback loops = compound authority."**
+**"A learning system for building authority through consistent expression."**
 
-1. Finish a project (analysis, tool, research, etc.)
-2. System generates 4 carousels with 3 copy variants each across all platforms
-3. Post 1 carousel/week for 4 weeks (~3 minutes effort per week)
-4. Measure what resonates (engagement, feedback, signals)
-5. Refine next month's carousels based on what worked
-6. Over 12 months: 48 carousels posted, clear signal on what your audience values, established authority in your domain
+The core insight: Consistency + feedback loops compound authority.
+
+System design around this:
+
+1. **Generate variants** (3 A/B/C options per carousel per platform)
+2. **Post with intention** (guided testing: contrarian → question → data → winning pattern)
+3. **Log what happens** (weekly reflection: metrics, surprises, learnings)
+4. **Refine next carousel** (based on what actually resonated)
+5. **Repeat for 12 months** (48 carousels, clear signal on your voice, established authority)
+
+Not just faster generation. But a behavioral system that forces learning into your workflow.
 
 ---
 
@@ -324,56 +329,59 @@ python batch_generate.py --config config/projects/2026-04-expedia.json
 
 ---
 
-### Feature 7: Performance Feedback Loop (Core Innovation)
+### Feature 7: Performance Feedback Loop & Weekly Reflection (Core Innovation)
 **Status:** Production  
-**Owner:** `social_copy_skill.py` → `_log_performance()` / `_learn_from_performance()`
+**Owner:** `social_copy_skill.py` → `_log_performance()` + Weekly reflection ritual
 
 **What it does:**
 - Provides structure to track which variants performed best after posting
-- Logs engagement metrics (likes, comments, clicks, shares) per variant
-- Identifies patterns (which hooks work, which tone resonates, data vs story)
-- Feeds learnings back into system for next carousel refinements
+- **Guided testing:** Each week posts different variant type to discover what resonates
+  - Week 1: Contrarian hook (test provocative angle)
+  - Week 2: Question-based hook (test engagement)
+  - Week 3: Data-heavy hook (test metric resonance)
+  - Week 4: Best-performing pattern (test validated winner)
+- **Weekly reflection ritual:** 2-3 minute structured reflection after each post
+- Logs engagement metrics and patterns for learning
+- Feeds learnings back into next carousel refinements
 
 **Specifications:**
-- **Tracking:** Extends memory file with performance data per variant
-- **Signals:** Engagement metrics logged per platform (optional but recommended)
-- **Learning:** System suggests refinements based on observed patterns
+- **Variant guidance:** System recommends which variant to post based on testing week
+- **Reflection structure:** Weekly prompt after posting:
+  1. Which variant did I post? (carousel, hook type, platform)
+  2. What metrics did I see? (engagement, surprises)
+  3. What changed from last week? (if learning emerged)
+  4. What will I test next week? (based on patterns)
+- **Memory tracking:** Performance data logged per variant with reflection notes
 - **Timeline:** Feedback loop runs across 4-week carousel cycle
 
-**Example Performance Log:**
+**Example Weekly Reflection:**
 ```json
 {
-  "carousel_1_linkedin": {
-    "variants": {
-      "A": {
-        "hook": "authority_statement",
-        "posted_date": "2026-04-25",
-        "performance": {
-          "impressions": 340,
-          "engagements": 18,
-          "engagement_rate": 0.053
-        }
-      },
-      "B": {
-        "hook": "contrarian_question",
-        "posted_date": "2026-05-02",
-        "performance": {
-          "impressions": 420,
-          "engagements": 45,
-          "engagement_rate": 0.107
-        }
-      }
-    },
-    "learning": "Contrarian question outperformed authority statement by 2x. Apply to carousel 2."
+  "week": 1,
+  "carousel": "The Luxury Hotel Problem",
+  "variant_posted": {
+    "platform": "linkedin",
+    "hook": "contrarian_question",
+    "copy": "Why do luxury hotels book 27% less?"
+  },
+  "metrics": {
+    "impressions": 340,
+    "engagements": 18
+  },
+  "reflection": {
+    "surprised_by": "More comments than expected asking follow-up questions",
+    "pattern_noticed": "Audience wants to understand the why, not just the what",
+    "testing_next_week": "Will test question-based hook on Instagram to see if engagement pattern holds"
   }
 }
 ```
 
 **Success Criteria:**
-- ✅ User can log performance data easily
-- ✅ System identifies winning patterns
-- ✅ Learnings inform next carousel generation
-- ✅ Feedback loop accelerates learning over time
+- ✅ User completes weekly reflection (2-3 min ritual)
+- ✅ Variant testing is guided (not random choice)
+- ✅ Patterns emerge after 4 weeks (clear signal on what resonates)
+- ✅ Learning compounds across carousel cycles
+- ✅ Reflection becomes part of behavioral flow (not separate task)
 
 ---
 
@@ -702,7 +710,11 @@ Step 6: Post to social
 
 ## Out of Scope (Future Iterations)
 
-### Phase 2 (Future)
+### Phase 2 (Future) — Enhanced Learning
+- [ ] Insight extraction layer (raw analysis → structured insights → config)
+  - **Why:** Most users struggle to extract insights from their own work
+  - **How:** Interactive prompts guide from raw findings → carousel-ready insights
+  - **Impact:** Makes system truly end-to-end (thinking → distribution)
 - [ ] Claude API integration for truly unique LLM-generated copy
 - [ ] Video generation (TikTok/Reels animation)
 - [ ] Hashtag optimization per platform
@@ -711,13 +723,25 @@ Step 6: Post to social
 - [ ] A/B testing framework
 - [ ] Team collaboration features
 
-### Phase 3 (Future)
+### Phase 3 (Future) — Scaling
 - [ ] Web dashboard UI (no CLI needed)
 - [ ] Template customization per brand
 - [ ] Carousel slide templates (pick different designs)
 - [ ] Auto-extraction from presentations (PowerPoint → config)
 - [ ] Email newsletter template generation
 - [ ] Blog post generation from carousel data
+
+### Critical Gap (Phase 2 Blocker)
+**Insight Extraction:** Right now the system assumes users can extract clean insights from their work. In reality, most people finish analysis with 50 half-formed ideas and don't know the actual core insight.
+
+This is the real bottleneck, not generation speed.
+
+Future versions should include:
+- Guided insight discovery (prompts that help identify the real finding)
+- Metric extraction (what numbers actually matter?)
+- Takeaway refinement (what should people do with this?)
+
+This would transform the system from "distribution for existing insights" → "end-to-end thinking + distribution"
 
 ---
 
@@ -948,50 +972,67 @@ This is not "another content tool." It's a case study in:
 
 ## Appendix E: Real-World Validation
 
-### Test Case: Expedia Marketplace Analysis
+### Test Case: Expedia Marketplace Analysis (4-Week Learning Cycle)
 
-This PRD is not theoretical — it was designed and validated on a real project.
+This PRD is not theoretical — it was designed and is being validated on a real project.
 
 **The Project:**
 - Data analysis: Why luxury hotels underperform on Expedia
 - Output: 20-slide research deck with 4 key findings
-- Challenge: How to maximize visibility for this research?
+- Challenge: How to maximize visibility while learning what actually resonates?
 
-**The System Applied:**
+**The System Applied (4-Week Execution Plan):**
+
 ```
-Step 1: Create project config (5 min)
-  → Extract 4 carousels from deck (problem + 3 findings)
-  → Identify key metrics (27% gap, booking rates, rankings)
-  → Write takeaway for each carousel
+WEEK 1: Test Contrarian Hook
+  Monday: Generate carousel 1 (The Luxury Hotel Problem)
+  Tuesday: Post LinkedIn (variant B - contrarian question)
+  Thursday: Post Instagram (variant A - plot twist)
+  Friday: Post Twitter (variant C - data paradox)
+  
+  REFLECTION (2-3 min):
+    - Which variant surprised me?
+    - What type of engagement did I see?
+    - What should I test next week?
 
-Step 2: Run batch generation (10 min)
-  → Generated 4 carousels × 4 platforms = 16 slide sets
-  → Total: 64 professional carousel slides ready to post
-
-Step 3: Generate copy variants (5 min)
-  → 4 carousels × 3 platforms × 3 variants = 36 copy options
-  → All platform-specific, all ready to test
-
-Step 4: Post & measure (ongoing)
-  → Week 1: Post carousel 1 (LinkedIn variant B - contrarian question)
-  → Week 2: Post carousel 1 (Instagram variant A - plot twist)
-  → Week 3: Post carousel 2 (Twitter variant C - data paradox)
-  → Week 4: Measure which performed best, apply learnings to carousel 3
+WEEK 2: Test Question-Based Hook
+  Based on Week 1 learnings, choose question-heavy variants for carousel 2
+  Repeat: Post → Reflect → Learn pattern
+  
+WEEK 3: Test Data-Heavy Hook
+  Based on Weeks 1-2 patterns, emphasize metrics in carousel 3
+  Identify emerging pattern: Does audience prefer X hook?
+  
+WEEK 4: Post Winning Pattern
+  By now: Clear signal on what resonates
+  Post carousel 4 using validated variant type
+  Final reflection: What did I learn? How will this inform May's project?
 ```
 
-**Results:**
+**Content Generated (Up Front):**
+- 4 carousels × 4 platforms = 64 carousel slides
+- 4 carousels × 3 platforms × 3 variants = 36 copy options
+- All ready to post, all tested systematically
+
+**Learning Loop (Over 4 Weeks):**
+- Week 1: Test hook A (contrarian)
+- Week 2: Test hook B (question) + compare to Week 1
+- Week 3: Test hook C (data) + identify emerging winner
+- Week 4: Validate winner + document learning for next cycle
+
+**Results So Far:**
 - ✅ Generation time: 10 minutes (matched spec)
 - ✅ Copy review: <5 min per carousel (matched spec)
 - ✅ All files organized and ready to post
-- ✅ Memory tracking refinements and performance
-- ✅ System ready for next project in May
+- ✅ Reflection structure integrated into weekly ritual
+- ✅ System proving it works in real life
 
 **This Proves:**
 1. The system works end-to-end
-2. Real projects can be processed without manual design
-3. Multi-platform content is generated in parallel
-4. Copy variants offer genuine testing options
-5. Infrastructure handles the friction, user handles the thinking
+2. Guided testing (not random variant selection) drives learning
+3. Weekly reflection makes behavior sustainable
+4. After 4 weeks, clear signal emerges on what resonates
+5. Infrastructure removes friction, user does the thinking + reflecting
 
 ---
 
