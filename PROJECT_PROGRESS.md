@@ -4,6 +4,13 @@
 
 **Status:** In Progress
 
+**Workflow:** Interactive workbook approach
+- Templates with code structure provided by Claude
+- User runs code and sees outputs
+- User & Claude discuss to build understanding
+- Analysis/interpretation added after understanding confirmed
+- All deliverables in markdown format
+
 ---
 
 ## Setup & Planning
@@ -22,10 +29,12 @@
 ## Notebook Development (7 Analyses)
 
 ### Task 1: Verify Corrected Notebook Runs
-- [ ] Run notebook cells 1-17 end-to-end
-- [ ] Verify Approach B median = **0.0%** (market parity) ✓ CRITICAL
-- [ ] Check quality trust gap: Budget +41%, Mid +18%, Luxury -2.3%
-- [ ] Check click rates flat (4-5%), booking rates declining (3.06% → 2.21%)
+- [x] Run notebook cells 1-17 end-to-end
+- [x] Verify Approach B median = **0.0%** (market parity) ✓ CRITICAL
+- [x] Check quality trust gap: Budget +41%, Mid +18%, Luxury -2.3%
+- [x] Check click rates flat (4-5%), booking rates declining (3.06% → 2.21%)
+
+**Status:** ✓ COMPLETE
 
 **Expected Output:**
 ```
@@ -35,22 +44,22 @@ Competitiveness Approach B: Median 0.0%
   Luxury click: ~4.5%, booking: ~2.21%
 ```
 
-### Task 2: Add Funnel Analysis
-- [ ] Add Part 3 header (markdown cell)
-- [ ] Add funnel code cell (impression → click → booking)
-- [ ] Add interpretation markdown
-- [ ] Run and verify output
+### Task 2: Execute Funnel Analysis
+- [ ] Run Part 3 code cell and verify output
+- [ ] Answer interpretation questions (4 questions)
+- [ ] Discuss findings with Claude
+- [ ] Record key insights in notebook
 
 **Expected Output:**
 - Click rates flat across all segments (ranking quality equal)
 - Booking rates declining (quality trust issue)
 - Luxury segment: 50% leakage at conversion (vs 35-38% budget/mid)
 
-### Task 3: Add Ranking Impact Analysis
-- [ ] Add Part 4 header
-- [ ] Add position impact code cell
-- [ ] Add markdown summary
-- [ ] Run and verify output
+### Task 3: Execute Ranking Impact Analysis
+- [ ] Run Part 4 code cell and verify output
+- [ ] Answer interpretation questions (4 questions)
+- [ ] Discuss findings with Claude
+- [ ] Record key insights in notebook
 
 **Expected Output:**
 - Position 1 click rate: 8-10%
@@ -58,11 +67,11 @@ Competitiveness Approach B: Median 0.0%
 - Click elasticity: ~3-4x (pos 1 vs 10)
 - Booking elasticity: ~1.5-2x
 
-### Task 4: Add Competitive Positioning Analysis
-- [ ] Add Part 5 header
-- [ ] Add competitor tier code cell
-- [ ] Add markdown summary
-- [ ] Run and verify output
+### Task 4: Execute Competitive Positioning Analysis
+- [ ] Run Part 5 code cell and verify output
+- [ ] Answer interpretation questions (4 questions)
+- [ ] Discuss findings with Claude
+- [ ] Record key insights in notebook
 
 **Expected Output:**
 - Underpriced hotels: no booking boost
@@ -70,35 +79,33 @@ Competitiveness Approach B: Median 0.0%
 - Overpriced: minimal impact
 - Confirms price is NOT the conversion lever
 
-### Task 5: Add Quality Trust Gap Deep-Dive
-- [ ] Add Part 6 header
-- [ ] Add quality metrics code cell
-- [ ] Add beat/fail promise breakdown
-- [ ] Add markdown summary
-- [ ] Run and verify output
+### Task 5: Execute Pricing Dynamics Analysis
+- [ ] Run Part 6 code cell and verify output
+- [ ] Answer interpretation questions (4 questions)
+- [ ] Discuss findings with Claude
+- [ ] Record key insights in notebook
+
+**Expected Output:**
+- Little difference across price quartiles
+- Weak elasticity confirms price isn't booking driver
+- Relative price (vs competitors) matters for competitive dynamics
+
+### Task 6: Execute Quality Trust Gap Deep-Dive
+- [ ] Run Part 7 code cell and verify output
+- [ ] Answer interpretation questions (4 questions)
+- [ ] Discuss findings with Claude
+- [ ] Record key insights in notebook
 
 **Expected Output:**
 - Budget: 60% beat promise, 40% fail (gap +41%)
 - Mid: 70% beat promise, 30% fail (gap +18%)
 - Luxury: 45% beat promise, 55% fail (gap -2.3%) ← PROBLEM
 
-### Task 6: Add Pricing Dynamics Analysis
-- [ ] Add Part 7 header
-- [ ] Add price quartile code cell
-- [ ] Add competitive tier code cell
-- [ ] Add markdown summary
-- [ ] Run and verify output
-
-**Expected Output:**
-- Little difference across price quartiles
-- Weak elasticity confirms price isn't booking driver
-- BUT: relative price (vs competitors) matters for competitive dynamics
-
-### Task 7: Add User Behavior Segmentation
-- [ ] Add Part 8 header
-- [ ] Add new vs returning visitor code cell
-- [ ] Add markdown summary
-- [ ] Run and verify output
+### Task 7: Execute User Behavior Segmentation
+- [ ] Run Part 8 code cell and verify output
+- [ ] Answer interpretation questions (4 questions)
+- [ ] Discuss findings with Claude
+- [ ] Record key insights in notebook
 
 **Expected Output:**
 - New visitors: baseline conversion
@@ -165,6 +172,18 @@ Competitiveness Approach B: Median 0.0%
   - Budget buyers get pleasant surprises
   - Highest conversion rate (3.06%)
   - Most resilient to quality issues
+
+---
+
+## Session Summary: Template Development Complete
+
+✓ **Blank templates created for all 6 analyses (Parts 3-8)**
+- Each template includes code structure with TODO comments
+- Each template includes 4 interpretation questions
+- User can now execute code step-by-step and discuss findings with Claude
+- This is the interactive workbook approach: guide → execute → discuss → analyze
+
+✓ **Ready for next phase:** User executes Task 2 (Funnel Analysis) and reports findings
 
 ---
 
