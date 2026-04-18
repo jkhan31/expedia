@@ -17,66 +17,77 @@ class SocialCopyGenerator:
         self.hashtags = copy_templates.get('hashtag_strategies', {})
 
     def generate_linkedin_post(self, carousel_data: Dict) -> str:
-        """Generate LinkedIn carousel post copy"""
+        """Generate LinkedIn carousel post copy with punchy hooks"""
         template = self.templates.get('linkedin', {})
 
-        headline = carousel_data.get('title', '')
         insight = carousel_data.get('key_insight', '')
         metrics = carousel_data.get('metrics', [])
         takeaway = carousel_data.get('takeaway', '')
 
-        # Build metric string
-        metric_str = " • ".join([f"{m.get('label', '')}: {m.get('value', '')}"
-                               for m in metrics[:2]])
+        # Start with the insight as the hook (punchy, no fluff)
+        post = f"{insight}\n\n"
 
-        post = f"🔍 {headline}\n\n"
-        post += f"In a recent analysis, I discovered: {insight}\n\n"
-        post += f"📊 {metric_str}\n\n"
-        post += f"This suggests: {takeaway}\n\n"
-        post += f"Read the full case study → {carousel_data.get('link', '')}\n\n"
-        post += f"What patterns have you noticed? Comment below."
+        # Add metrics
+        if metrics:
+            metric_str = " | ".join([f"{m.get('label', '')}: {m.get('value', '')}"
+                                    for m in metrics[:2]])
+            post += f"📊 {metric_str}\n\n"
+
+        # Add the deeper insight
+        post += f"{takeaway}\n\n"
+
+        # CTA
+        link = carousel_data.get('link', '')
+        if link:
+            post += f"Read the full analysis → {link}"
+        else:
+            post += "Read the full analysis on my website"
 
         return post
 
     def generate_instagram_post(self, carousel_data: Dict, hashtags_list: List[str] = None) -> str:
-        """Generate Instagram carousel post copy"""
-        template = self.templates.get('instagram', {})
-
-        headline = carousel_data.get('title', '')
+        """Generate Instagram carousel post copy with punchy hooks"""
         insight = carousel_data.get('key_insight', '')
-        metric_label = carousel_data.get('metrics', [{}])[0].get('label', '')
-        metric_value = carousel_data.get('metrics', [{}])[0].get('value', '')
+        metrics = carousel_data.get('metrics', [{}])
+        metric_label = metrics[0].get('label', '') if metrics else ''
+        metric_value = metrics[0].get('value', '') if metrics else ''
 
-        post = f"💡 {headline}\n\n"
-        post += f"{insight}\n\n"
-        post += f"📊 {metric_label}: {metric_value}\n\n"
-        post += f"Full breakdown on my website 🔗 Link in bio\n\n"
+        # Hook first (punchy, no headline)
+        post = f"Plot twist: {insight}\n\n"
+
+        # Quick stat
+        if metric_label and metric_value:
+            post += f"📊 {metric_label}: {metric_value}\n\n"
+
+        # CTA
+        post += f"Full breakdown on my website 🔗 Link in bio"
 
         if hashtags_list:
-            post += " ".join([f"#{tag}" for tag in hashtags_list])
+            post += f"\n\n{' '.join([f'#{tag}' for tag in hashtags_list])}"
 
         return post
 
     def generate_twitter_thread(self, carousel_data: Dict) -> List[str]:
-        """Generate Twitter thread (list of tweets)"""
-        headline = carousel_data.get('title', '')
+        """Generate Twitter thread with punchy hooks and no fluff"""
+        insight = carousel_data.get('key_insight', '')
         insights = carousel_data.get('insights', [])
-        metrics = carousel_data.get('metrics', [])
+        takeaway = carousel_data.get('takeaway', '')
 
         tweets = []
 
-        # Tweet 1: Hook
-        tweets.append(f"Thread: {headline} 🧵\n\nWhat I found will surprise you. Here's the data 👇")
+        # Tweet 1: Hook only (no "Thread:" or explanation)
+        tweets.append(f"{insight} 🧵")
 
-        # Tweets 2-N: Insights
-        for i, insight in enumerate(insights[:5], start=2):
-            metric_str = f" {metrics[i-2]['value']}" if i-2 < len(metrics) else ""
-            tweet = f"{i-1}. {insight['headline']}\n\n{insight.get('description', '')}{metric_str}"
+        # Tweets 2-N: Build narrative with insights
+        for i, insight_item in enumerate(insights[:4], start=2):
+            tweet = f"{i-1}. {insight_item['headline']}\n\n{insight_item.get('description', '')}"
+            if 'metric_value' in insight_item:
+                tweet += f"\n\n📊 {insight_item.get('metric_value', '')}"
             tweets.append(tweet)
 
-        # Final tweet: CTA
-        cta = f"Full analysis + recommendations: {carousel_data.get('link', '')}\n\nWhat patterns have you noticed? Reply below."
-        tweets.append(cta)
+        # Final tweet: Takeaway + CTA (no "what patterns" fluff)
+        final = f"Bottom line: {takeaway}\n\nFull analysis: {carousel_data.get('link', '')}"
+        tweets.append(final)
 
         return tweets
 

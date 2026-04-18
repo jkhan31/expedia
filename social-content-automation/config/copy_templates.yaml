@@ -7,81 +7,92 @@ copy_templates:
     hook: "🔍 {insight_headline}"
     structure:
       - "Hook (question or bold statement)"
-      - "Context (why this matters)"
-      - "Data/Finding (2-3 key metrics)"
-      - "Takeaway (what this means)"
+      - "Data/Finding (key metric)"
+      - "Insight (implication)"
       - "CTA (engage or read full case study)"
+    hooks:
+      - "{insight}"
+      - "Here's what most people get wrong about {title}"
+      - "You'd assume {common_belief}. The data says otherwise."
+      - "Why does {insight}? Here's what I found."
+      - "{insight} Here's why."
     example: |
-      A luxury hotel paradox: booking rates drop as star ratings increase. Here's why.
+      Luxury hotels book 27% less on Expedia. But price isn't the problem.
 
-      In a recent analysis of {project_domain}, I discovered something counterintuitive.
+      📊 Luxury: 2.20% booking rate | Budget: 3.04%
 
-      📊 Finding: {key_metric}
+      After analyzing 100k searches, the real culprit is quality expectation misalignment. Luxury buyers expect 4.30★ hotels but get 4.20★. That gap kills conversions.
 
-      This suggests {implication}. The opportunity: {action}.
-
-      What's your experience? Comment below or read the full case study → {link}
+      Read the full analysis → {link}
 
     tone_notes:
-      - Professional but not stiff
+      - Start with intrigue or surprise
       - Data-backed (cite metrics)
       - Thought-leaderly (position as expert)
-      - Engaging (ask questions)
+      - Engaging (ask questions or provoke thinking)
 
   instagram:
     hook: "{emoji} {insight_headline}"
     structure:
-      - "Hook (casual, relatable)"
-      - "Finding (main insight)"
-      - "Why it matters (2-3 words max)"
-      - "Quick stat (1-2 metrics)"
+      - "Hook (surprising statement or question)"
+      - "Quick stat (main metric)"
+      - "Why it matters"
       - "CTA + hashtags"
+    hooks:
+      - "{insight}"
+      - "Plot twist: {insight}"
+      - "Nobody talks about this, but {insight}"
+      - "🚨 {insight}"
     example: |
-      💡 Why luxury hotels underperform online
+      Plot twist: Luxury hotels don't fail because of price.
 
-      Analysis of {project_domain} revealed: {key_finding}
+      📊 Luxury books 27% less than budget. But here's why...
 
-      📊 The numbers: {metric} vs {comparison}
-
-      The implications? {brief_takeaway}
+      Quality expectation gap. Buyers expect 4.30★ and get 4.20★. The letdown is real.
 
       Full breakdown on my website 🔗 Link in bio
-      {hashtags}
+      #dataanalysis #ecommerce #insights
 
     tone_notes:
-      - Conversational, friendly
+      - Start with surprise or intrigue
       - Use emojis (2-4 per post)
       - Shorter sentences
-      - Focus on visual storytelling
+      - Focus on insight over fluff
 
   twitter:
     structure:
-      - "Tweet 1: Hook/question (set up the thread)"
-      - "Tweets 2-6: Narrative breakdown (data + insight)"
-      - "Tweet 7-8: Takeaway + CTA"
+      - "Tweet 1: Hook/statement (intrigue, don't explain)"
+      - "Tweets 2-N: Data + insight (build narrative)"
+      - "Final tweet: Takeaway + CTA"
+
+    tweet_hooks:
+      - "{insight}"
+      - "You'd think {common_belief}. Wrong."
+      - "The data says: {insight}"
+      - "Hot take: {insight}"
+      - "{insight} Here's the proof 🧵"
 
     tweet_1_example: |
-      Thread: Why {topic} fails on {platform} 🧵
-
-      What I found will surprise you. Here's the data 👇
+      Luxury hotels book 27% less on Expedia. Price isn't why. 🧵
 
     tweet_middle_example: |
-      Insight {n}: {finding}
+      The real problem: Quality expectation gap.
 
-      This is important because {why_matters}. Data: {metric}
+      Luxury buyers expect 4.30★ hotels.
+      They get 4.20★.
+
+      That gap kills conversions.
 
     tweet_final_example: |
-      The bottom line: {takeaway}
+      Fix the quality gap + trust signals = luxury conversion recovers.
 
-      Full analysis + recommendations: {link}
-
-      What patterns have you noticed? Reply below.
+      Full analysis: {link}
 
     tone_notes:
-      - Punchy, no fluff
-      - Each tweet is standalone
-      - Thread narrative is building
-      - Use thread emoji 🧵 in first tweet
+      - Hook first (no setup needed)
+      - Punchy, declarative statements
+      - Build narrative with data
+      - No fluff or apologies
 
   tiktok:
     structure:
