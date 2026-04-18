@@ -1,10 +1,13 @@
 # Data Definitions: Hotel Booking Marketplace Dataset
 
-**Dataset:** train.csv (sampled: 10,000 rows from 100,000 total)  
+**Source:** Kaggle Expedia Personalized Sort (ICDM 2013) Competition  
+**Dataset:** train.csv (sampled: 100,000 rows)  
 **Time Period:** 2012–2013  
-**Searches:** 3,542 unique  
-**Properties:** 8,390 unique  
+**Searches:** 19,406 unique  
+**Properties:** 42,870 unique  
 **Key Feature:** Outcome data available (click_bool, booking_bool, gross_bookings_usd)
+
+**For complete official column definitions, see:** [expedia-kaggle-column-definitions.md](expedia-kaggle-column-definitions.md)
 
 ---
 
@@ -65,8 +68,8 @@
 |--------|------|-----------|-------|
 | price_usd | float64 | Final nightly rate shown to user | USD, single currency |
 | promotion_flag | int64 | Special promotion active? | 1=promoted deal, 0=regular |
-| comp1_rate through comp8_rate | float64 | Competitor 1–8 nightly rates | Direct competitor prices (USD) |
-| comp1_rate_percent_diff through comp8_rate_percent_diff | float64 | % price difference vs competitors | E.g., +10 = 10% more expensive |
+| comp1_rate through comp8_rate | int64 | Competitor 1–8 price comparison (encoded) | **CRITICAL:** +1=Expedia lower, 0=same, -1=Expedia higher (NOT actual prices) |
+| comp1_rate_percent_diff through comp8_rate_percent_diff | float64 | % price difference vs competitors | Actual %; Expedia as denominator |
 
 ---
 
@@ -74,7 +77,7 @@
 
 | Column | Type | Definition | Notes |
 |--------|------|-----------|-------|
-| comp1_inv through comp8_inv | float64 | Competitor 1–8 availability | 0=no inventory, -1=not displayed |
+| comp1_inv through comp8_inv | int64 | Competitor 1–8 availability | +1=competitor no stock, 0=both have stock, NULL=no data |
 
 ---
 
