@@ -1,0 +1,11 @@
+🔍 The Luxury Hotel Problem
+
+In a recent analysis, I discovered: Luxury hotels book 27% less often than budget hotels. But the reason isn't what you'd expect.
+
+📊 Booking Rate Gap: 27% lower • Sample Size: 100k searches analyzed
+
+This suggests: Understanding the root cause unlocks a massive revenue opportunity
+
+Read the full case study → 
+
+What patterns have you noticed? Comment below.
