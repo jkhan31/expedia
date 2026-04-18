@@ -56,27 +56,43 @@ Search → Ranked Hotels → Click → Booking
 
 ## 📥 5. Inputs
 
-### Dataset Features
+### Dataset: 10,000 rows × 54 columns
+- **Source:** train.csv (first 100k rows, random sample of 10k)
+- **Period:** 2012–2013
+- **Searches:** 3,542 unique
+- **Properties:** 8,390 unique
+- **Outcome Rate:** 2.65% bookings, ~25% clicks
+
+### Key Features Available
 
 #### Search Context
-- `srch_id`, dates, number of guests
-- booking window, length of stay
+- `srch_id`: unique search identifier
+- `srch_booking_window`: urgency (days advance)
+- `srch_length_of_stay`: trip duration
+- `srch_adults_count`, `srch_children_count`, `srch_room_count`: group composition
+- `srch_saturday_night_bool`: weekend indicator
 
 #### Property Attributes
-- `price_usd`
-- `prop_review_score`, `prop_starrating`
-- `prop_brand_bool`
+- `price_usd`: nightly rate shown
+- `prop_starrating`: 0–5 stars
+- `prop_review_score`: guest rating average
+- `prop_brand_bool`: branded hotel or independent
+- `prop_location_score1/2`: location relevance (pre-calculated)
 
 #### User Context
-- `visitor_visit_nbr`
-- historical preferences
+- `visitor_hist_starrating`: user's historical rating preference (NaN = new user)
+- `visitor_hist_adr_usd`: user's historical average daily rate
+- `site_id`: which booking platform
 
-#### Competition Data
-- competitor price signals
+#### Competition Data (8 competitors per search)
+- `comp1_rate` through `comp8_rate`: competitor nightly prices (USD)
+- `comp1_rate_percent_diff` through `comp8_rate_percent_diff`: % price difference
+- `comp1_inv` through `comp8_inv`: competitor room availability
 
-#### Outcomes
-- `click_bool`
-- `booking_bool`
+#### Outcomes (CRITICAL)
+- `click_bool`: 1 = user clicked, 0 = no click
+- `booking_bool`: 1 = user booked, 0 = no booking
+- `gross_bookings_usd`: revenue if booked (NaN if not booked)
 
 ---
 
@@ -90,6 +106,30 @@ Search → Ranked Hotels → Click → Booking
 
 ### Optional
 - Supporting analysis notebook
+
+---
+
+## ⚠️ 6.5 Data Quality & Constraints
+
+### What We Know (Directly Measurable)
+✅ Outcome data available: click and booking rates by position, price, quality  
+✅ Competitor pricing: direct price comparison data  
+✅ User behavior signals: booking window (urgency), group composition  
+✅ Property quality: ratings and reviews  
+
+### Data Limitations
+- **Anonymized:** No property names, actual locations, or visitor IDs
+- **Sparse:** 35% missing competitor data, new users have no history
+- **Outliers:** Price range $8–$176k (capped at $1k for analysis)
+- **Sample:** 10k rows; may have booking pattern bias
+- **Temporal:** 2012–2013 only; booking behavior may differ today
+
+### Analysis Approach
+- Use `docs/data-definitions.md` as reference for all column meanings
+- Handle NaN competitor data by analyzing only searches with ≥3 competitors
+- Cap price analysis to realistic range ($8–$1000)
+- Segment analysis by user type (new vs returning) where data available
+- Frame all findings as "correlated with" not "causes" causation (except outcome-driven A/B test ideas)
 
 ---
 
