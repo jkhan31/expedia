@@ -5,11 +5,12 @@
 **Goal:** Build a Jupyter notebook that conducts 6 interconnected marketplace analyses, generate supporting visualizations, and compile findings into a 12–15 slide consultant deck.
 
 **Architecture:** 
-- Notebook-first: Load 10k sample from train.csv, verify data structure, enrich with derived metrics (competitiveness, segment), run analyses sequentially
+- Notebook-first: Load 100k sample from pre-prepared sample.csv, verify data structure, enrich with derived metrics (competitiveness, segment), run analyses sequentially
 - Each analysis is exploratory + visual: code cells for calculation, matplotlib for charts
 - Collaborative interpretation: After each analysis, pause to discuss findings and validate assumptions
 - PM lens: Apply critical thinking to each insight (so what? correlation vs causation? measurement approach?)
 - Deck assembly: Select strongest visualizations and findings, build 12–15 slide consultant deck
+- **KEY:** Outcome data IS available (click_bool, booking_bool, gross_bookings_usd) — enables causal measurement of ranking/pricing impact
 
 **Tech Stack:**
 - Python: pandas, numpy, matplotlib/seaborn, scipy
@@ -237,18 +238,18 @@ df['competitiveness_score'] = df.apply(calculate_competitiveness, axis=1)
 
 print("Competitiveness Score Calculated:")
 print(f"Non-NaN rows: {df['competitiveness_score'].notna().sum():,} ({df['competitiveness_score'].notna().sum() / len(df) * 100:.1f}%)")
-print(f"Mean: {df['competitiveness_score'].mean():.2f}%")
-print(f"Median: {df['competitiveness_score'].median():.2f}%")
+print(f"Mean: {df['competitiveness_score'].mean():+.2f}%")
+print(f"Median: {df['competitiveness_score'].median():+.2f}%")
 print(f"Std: {df['competitiveness_score'].std():.2f}%")
 print(f"\nRange:")
-print(f"  Most underpriced: {df['competitiveness_score'].min():.2f}%")
-print(f"  Most overpriced: {df['competitiveness_score'].max():.2f}%")
+print(f"  Most underpriced: {df['competitiveness_score'].min():+.2f}%")
+print(f"  Most overpriced: {df['competitiveness_score'].max():+.2f}%")
 print(f"\nInterpretation:")
-print(f"  Negative value = cheaper than competitors")
-print(f"  Positive value = more expensive than competitors")
+print(f"  Negative % = cheaper than competitors (good value)")
+print(f"  Positive % = more expensive than competitors (premium)")
 ```
 
-Expected: ~65% with competitor data, mean near $0 (some underpriced, some overpriced).
+Expected: ~65% with competitor data, mean near 0% (some underpriced, some overpriced).
 
 - [ ] **Step 4: Add market segmentation cell**
 
@@ -629,20 +630,21 @@ Before moving to the next analysis, answer:
 print("Price Competitiveness Analysis:")
 print("=" * 60)
 
-print(f"\nCompetitiveness Score (price vs competitors):")
+print(f"\nCompetitiveness Score (% difference vs competitors):")
 print(df['competitiveness_score'].describe())
+print("  Interpretation: Negative = cheaper than competitors; Positive = more expensive")
 
-print(f"\nCompetitiveness by market segment:")
+print(f"\nCompetitiveness by market segment (% difference vs competitors):")
 competitiveness_by_segment = df.groupby('market_segment')['competitiveness_score'].agg(['count', 'mean', 'std', 'min', 'max'])
 print(competitiveness_by_segment)
 
-print(f"\nUnderpriced (saving vs competitors):")
+print(f"\nUnderpriced (saving >10% vs competitors):")
 underpriced = df[df['competitiveness_score'] < -10]
 print(f"Hotels: {len(underpriced)} ({len(underpriced)/len(df)*100:.1f}%)")
 print(f"Avg rating: {underpriced['prop_starrating'].mean():.2f}")
 print(f"Avg review score: {underpriced['prop_review_score'].mean():.2f}")
 
-print(f"\nOverpriced (premium vs competitors):")
+print(f"\nOverpriced (premium >10% vs competitors):")
 overpriced = df[df['competitiveness_score'] > 10]
 print(f"Hotels: {len(overpriced)} ({len(overpriced)/len(df)*100:.1f}%)")
 print(f"Avg rating: {overpriced['prop_starrating'].mean():.2f}")
@@ -927,17 +929,17 @@ print("Pricing Dynamics Analysis:")
 print("=" * 60)
 
 # Competitiveness by segment
-print("\nPricing efficiency by segment:")
+print("\nPricing efficiency by segment (% vs competitors):")
 for segment in ['Budget', 'Mid', 'Luxury']:
     segment_df = df[df['market_segment'] == segment]
     competitiveness = segment_df['competitiveness_score'].dropna()
     if len(competitiveness) > 0:
         print(f"\n{segment} Segment:")
-        print(f"  Mean competitiveness: ${competitiveness.mean():.2f}")
-        print(f"  Std dev: ${competitiveness.std():.2f}")
-        print(f"  Underpriced (< -$10): {(competitiveness < -10).sum()} hotels")
-        print(f"  Overpriced (> +$10): {(competitiveness > 10).sum()} hotels")
-        print(f"  Fair priced (±$10): {((competitiveness >= -10) & (competitiveness <= 10)).sum()} hotels")
+        print(f"  Mean competitiveness: {competitiveness.mean():+.2f}%")
+        print(f"  Std dev: {competitiveness.std():.2f}%")
+        print(f"  Underpriced (< -10%): {(competitiveness < -10).sum()} hotels")
+        print(f"  Overpriced (> +10%): {(competitiveness > 10).sum()} hotels")
+        print(f"  Fair priced (±10%): {((competitiveness >= -10) & (competitiveness <= 10)).sum()} hotels")
 
 # Competition intensity (price dispersion)
 print("\nCompetition intensity (price dispersion) by segment:")
@@ -994,7 +996,7 @@ parts = axes[0, 0].violinplot(competitiveness_data, positions=range(len(segment_
 axes[0, 0].axhline(y=0, color='r', linestyle='--', alpha=0.5, label='Fair price')
 axes[0, 0].set_xticks(range(len(segment_order)))
 axes[0, 0].set_xticklabels(segment_order)
-axes[0, 0].set_ylabel('Competitiveness Score ($)')
+axes[0, 0].set_ylabel('Competitiveness Score (%)')
 axes[0, 0].set_title('Price Competitiveness Distribution by Segment')
 axes[0, 0].grid(True, alpha=0.3, axis='y')
 
@@ -1006,7 +1008,7 @@ for segment in segment_order:
                       label=segment, alpha=0.6, s=80, color=colors_map[segment])
 axes[0, 1].axhline(y=0, color='r', linestyle='--', alpha=0.5)
 axes[0, 1].set_xlabel('Price (USD)')
-axes[0, 1].set_ylabel('Competitiveness Score ($)')
+axes[0, 1].set_ylabel('Competitiveness Score (%)')
 axes[0, 1].set_title('Price vs Competitiveness by Segment')
 axes[0, 1].legend()
 axes[0, 1].grid(True, alpha=0.3)
@@ -1319,12 +1321,13 @@ print(f"\n5. USER BEHAVIOR")
 print(f"   Last-minute bookings (0-2 days): {last_minute_pct:.1f}%")
 print(f"   → High urgency may reduce price sensitivity")
 
-# Finding 6: Data limitations
-print(f"\n6. DATA LIMITATIONS")
-print(f"   No outcome data (clicks, bookings)")
-print(f"   All users are new (100% NULL visitor history)")
-print(f"   Limited competitor data (sparse across searches)")
-print(f"   → Cannot measure direct impact of ranking/pricing on bookings")
+# Finding 6: Data strengths & limitations
+print(f"\n6. DATA STRENGTHS & LIMITATIONS")
+print(f"   ✓ HAVE outcome data (click_bool, booking_bool, gross_bookings_usd)")
+print(f"   ✓ Can measure DIRECT impact of ranking/pricing on conversions")
+print(f"   ✗ All users are new (100% NULL visitor history)")
+print(f"   ✗ Limited competitor data (sparse across searches, ~65% coverage)")
+print(f"   ✗ Cannot segment by repeat vs new user behavior")
 ```
 
 - [ ] **Step 3: Add recommendations preview**
