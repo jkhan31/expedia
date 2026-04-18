@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Expedia Marketplace Analysis — Competitive Positioning Diagnosis</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Archivo:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Archivo:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         /* ===== jasonkhanani.com Branding ===== */
         :root {
@@ -22,23 +25,21 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: var(--rice-paper);
             color: var(--sumi-ink);
-        }
-
-        body {
             overflow: hidden;
         }
 
         .presentation-viewport {
             display: flex;
             flex-direction: column;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
         }
 
         .slide-content {
@@ -46,6 +47,7 @@
             display: flex;
             overflow: hidden;
             width: 100%;
+            position: relative;
         }
 
         .slide {
@@ -54,41 +56,54 @@
             background: var(--rice-paper);
             display: flex;
             flex-direction: column;
-            padding: 48px 60px;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            overflow-y: auto;
+            overflow-x: hidden;
             animation: fadeIn 0.4s ease-in-out;
         }
 
         .slide-inner {
-            flex: 1;
+            width: 100%;
+            max-width: 1400px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            overflow-y: auto;
-            padding-right: 20px;
+            gap: 30px;
         }
 
-        .slide-inner::-webkit-scrollbar {
-            width: 6px;
+        .slide::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .slide-inner::-webkit-scrollbar-track {
+        .slide::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        .slide-inner::-webkit-scrollbar-thumb {
+        .slide::-webkit-scrollbar-thumb {
             background: var(--border-light);
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* ===== TITLE SLIDE ===== */
         .slide.title-slide {
             justify-content: center;
-            padding: 60px;
+            align-items: center;
+        }
+
+        .slide.title-slide .slide-inner {
+            text-align: center;
+            max-width: 800px;
         }
 
         .slide.title-slide h1 {
@@ -96,28 +111,33 @@
             font-size: 72px;
             font-weight: 700;
             color: var(--sumi-ink);
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             line-height: 1.1;
-            text-align: center;
         }
 
         .slide.title-slide .subtitle {
             font-size: 32px;
             font-weight: 400;
             color: var(--hanko-rust);
-            margin-bottom: 50px;
-            text-align: center;
+            margin-bottom: 40px;
         }
 
         .slide.title-slide .divider {
             width: 100px;
             height: 3px;
             background: var(--hanko-rust);
-            margin: 40px auto;
+            margin: 30px auto 40px;
+        }
+
+        .slide.title-slide .author {
+            font-size: 16px;
+            color: var(--sumi-ink);
+            font-weight: 600;
+            margin-bottom: 40px;
+            opacity: 0.9;
         }
 
         .slide.title-slide .meta {
-            text-align: center;
             border-top: 1px solid var(--border-light);
             padding-top: 40px;
         }
@@ -127,6 +147,7 @@
             color: var(--sumi-ink);
             opacity: 0.7;
             margin: 8px 0;
+            line-height: 1.5;
         }
 
         .slide.title-slide .meta-item a {
@@ -135,17 +156,17 @@
             font-weight: 600;
         }
 
-        .slide.title-slide .author {
-            font-size: 16px;
-            color: var(--sumi-ink);
-            font-weight: 600;
-            margin-bottom: 50px;
-            margin-top: 30px;
+        .slide.title-slide .meta-item a:hover {
+            text-decoration: underline;
         }
 
         /* ===== CONTENT SLIDES ===== */
+        .slide.content-slide .slide-inner {
+            max-width: 1300px;
+        }
+
         .slide-header {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .slide-header h2 {
@@ -153,9 +174,9 @@
             font-size: 48px;
             font-weight: 700;
             color: var(--sumi-ink);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             border-bottom: 3px solid var(--hanko-rust);
-            padding-bottom: 16px;
+            padding-bottom: 12px;
         }
 
         .slide-header .subtitle {
@@ -166,68 +187,25 @@
 
         /* ===== LAYOUTS ===== */
 
-        /* Single Column */
-        .layout-single {
-            max-width: 100%;
-        }
-
-        /* Two Column Split */
         .layout-two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            gap: 50px;
             align-items: center;
+            width: 100%;
+            min-height: 500px;
         }
 
         .layout-two-column .column {
             display: flex;
             flex-direction: column;
             gap: 20px;
+            height: 100%;
         }
 
-        /* Three Card Grid */
-        .layout-three-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        /* Full Width Table */
-        .table-container {
+        .layout-single {
             width: 100%;
-            overflow-x: auto;
-            margin: 30px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        table thead {
-            background: var(--hanko-rust);
-            color: var(--rice-paper);
-        }
-
-        table th {
-            padding: 16px;
-            text-align: left;
-            font-weight: 700;
-            border: none;
-        }
-
-        table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        table tbody tr:hover {
-            background: rgba(199, 62, 29, 0.05);
-        }
-
-        table tbody tr:last-child td {
-            border-bottom: none;
+            max-width: 100%;
         }
 
         /* Content Text */
@@ -278,16 +256,16 @@
         /* Metrics Cards */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 20px;
-            margin: 30px 0;
+            margin: 20px 0;
+            width: 100%;
         }
 
         .metric-card {
             background: transparent;
-            padding: 24px;
+            padding: 20px;
             border-left: 4px solid var(--hanko-rust);
-            border-radius: 0;
         }
 
         .metric-card .label {
@@ -300,7 +278,7 @@
         }
 
         .metric-card .value {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--hanko-rust);
             font-family: 'Archivo', serif;
@@ -310,8 +288,8 @@
         .highlight-box {
             background: rgba(199, 62, 29, 0.08);
             border-left: 4px solid var(--hanko-rust);
-            padding: 24px;
-            margin: 30px 0;
+            padding: 20px;
+            margin: 20px 0;
             font-size: 16px;
             line-height: 1.7;
             color: var(--sumi-ink);
@@ -322,12 +300,50 @@
             font-weight: 700;
         }
 
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        table thead {
+            background: var(--hanko-rust);
+            color: var(--rice-paper);
+        }
+
+        table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            border: none;
+        }
+
+        table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        table tbody tr:hover {
+            background: rgba(199, 62, 29, 0.05);
+        }
+
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
         /* Charts */
         .chart-wrapper {
             position: relative;
             width: 100%;
-            height: 350px;
-            margin: 30px 0;
+            height: 400px;
+            min-height: 400px;
         }
 
         .chart-wrapper canvas {
@@ -340,10 +356,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 60px;
+            padding: 16px 60px;
             border-top: 1px solid var(--border-light);
             background: var(--rice-paper);
             flex-shrink: 0;
+            height: auto;
             gap: 20px;
         }
 
@@ -352,6 +369,7 @@
             color: var(--sumi-ink);
             opacity: 0.6;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .nav-buttons {
@@ -385,21 +403,35 @@
         /* Responsive */
         @media (max-width: 1024px) {
             .slide {
-                padding: 36px 40px;
+                padding: 40px 30px;
             }
 
-            .layout-two-column,
-            .layout-three-cards {
+            .layout-two-column {
                 grid-template-columns: 1fr;
                 gap: 40px;
+                min-height: auto;
             }
 
             .slide-header h2 {
                 font-size: 36px;
             }
+
+            .slide-footer {
+                padding: 16px 30px;
+                flex-direction: column-reverse;
+            }
+
+            .nav-buttons {
+                width: 100%;
+            }
+
+            .nav-buttons button {
+                flex: 1;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="presentation-viewport">
         <div class="slide-content">
@@ -423,7 +455,7 @@
                 subtitle: 'Competitive Positioning Diagnosis',
                 author: 'Jason Kester Hanani',
                 meta: [
-                    '100,000 sample searches (2012-2013) from Expedia Personalized Sort Challenge',
+                    '100,000 sample searches (2012-2013) from <a href="https://www.kaggle.com/competitions/expedia-personalized-sort/overview/description" target="_blank">Kaggle: Expedia Personalized Sort Challenge</a>',
                     'Sample from full dataset from the following source: <a href="https://www.kaggle.com/competitions/expedia-personalized-sort/overview/description" target="_blank">Kaggle: Expedia Personalized Sort Challenge</a>',
                     'April 18, 2026'
                 ]
@@ -859,13 +891,13 @@
         ];
 
         let currentSlide = 0;
-        let chartInstances = [];
+        let chartInstances = {};
 
         function destroyCharts() {
-            chartInstances.forEach(chart => {
+            Object.values(chartInstances).forEach(chart => {
                 if (chart) chart.destroy();
             });
-            chartInstances = [];
+            chartInstances = {};
         }
 
         function renderSlide(slideIndex) {
@@ -935,8 +967,10 @@
             document.getElementById('prev-btn').disabled = slideIndex === 0;
             document.getElementById('next-btn').disabled = slideIndex === slides.length - 1;
 
-            // Render charts
+            // Destroy old charts
             destroyCharts();
+
+            // Render new charts after DOM is updated
             setTimeout(() => {
                 if (slide.layout === 'two-column') {
                     if (slide.left && slide.left.type === 'chart') {
@@ -946,13 +980,23 @@
                         renderChart(slideIndex, 'right', slide.right);
                     }
                 }
-            }, 100);
+            }, 50);
         }
 
         function renderChart(slideIndex, position, chartConfig) {
-            const ctx = document.getElementById(`chart-${slideIndex}-${position}`);
-            if (!ctx) return;
+            const canvasId = `chart-${slideIndex}-${position}`;
+            const container = document.getElementById(canvasId);
 
+            if (!container) return;
+
+            // Create canvas if it doesn't exist
+            let canvas = document.querySelector(`#${canvasId} canvas`);
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                container.appendChild(canvas);
+            }
+
+            const ctx = canvas.getContext('2d');
             const chart = new Chart(ctx, {
                 type: chartConfig.chartType,
                 data: chartConfig.data,
@@ -969,27 +1013,31 @@
                             beginAtZero: true,
                             max: 15,
                             grid: {
-                                color: 'rgba(26, 26, 26, 0.05)'
+                                color: 'rgba(26, 26, 26, 0.05)',
+                                drawBorder: false
                             },
                             ticks: {
-                                font: { size: 12 },
-                                color: 'rgba(26, 26, 26, 0.6)'
+                                font: { size: 12, family: 'Inter' },
+                                color: 'rgba(26, 26, 26, 0.6)',
+                                padding: 10
                             }
                         },
                         x: {
                             grid: {
-                                display: false
+                                display: false,
+                                drawBorder: false
                             },
                             ticks: {
-                                font: { size: 12 },
-                                color: 'rgba(26, 26, 26, 0.6)'
+                                font: { size: 12, family: 'Inter' },
+                                color: 'rgba(26, 26, 26, 0.6)',
+                                padding: 10
                             }
                         }
                     }
                 }
             });
 
-            chartInstances.push(chart);
+            chartInstances[canvasId] = chart;
         }
 
         function nextSlide() {
@@ -1014,4 +1062,5 @@
         renderSlide(0);
     </script>
 </body>
+
 </html>
