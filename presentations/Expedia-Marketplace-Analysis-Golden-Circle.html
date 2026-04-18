@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Expedia Marketplace Analysis — Golden Circle Framework</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Archivo:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --rice-paper: #FAF5F0;
+            --sumi-ink: #1A1A1A;
+            --hanko-rust: #C73E1D;
+            --fox-orange: #F07F2E;
+            --positive-green: #295C27;
+            --border-light: rgba(26, 26, 26, 0.1);
+            --section-why: rgba(199, 62, 29, 0.06);
+            --section-how: rgba(79, 120, 150, 0.06);
+            --section-what: rgba(41, 92, 39, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--rice-paper);
+            color: var(--sumi-ink);
+            overflow: hidden;
+        }
+
+        .presentation-viewport {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+            min-height: 0;
+        }
+
+        #slides-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            background: var(--rice-paper);
+            display: flex;
+            flex-direction: column;
+            padding: 52px 72px 40px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            animation: fadeIn 0.3s ease-in-out;
+            flex-shrink: 0;
+        }
+
+        .slide.title-slide {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.content-slide {
+            justify-content: flex-start;
+            align-items: stretch;
+        }
+
+        .slide.section-divider {
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(199, 62, 29, 0.03) 0%, rgba(79, 120, 150, 0.03) 50%, rgba(41, 92, 39, 0.03) 100%);
+        }
+
+        .slide.section-why { background: var(--section-why); }
+        .slide.section-how { background: var(--section-how); }
+        .slide.section-what { background: var(--section-what); }
+
+        .slide-inner {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 24px;
+        }
+
+        .slide.title-slide .slide-inner {
+            text-align: center;
+            max-width: 860px;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .slide::-webkit-scrollbar { width: 6px; }
+        .slide::-webkit-scrollbar-track { background: transparent; }
+        .slide::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ===== TITLE SLIDE ===== */
+        .slide.title-slide h1 {
+            font-family: 'Archivo', serif;
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--sumi-ink);
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .slide.title-slide .subtitle {
+            font-size: 30px;
+            font-weight: 400;
+            color: var(--hanko-rust);
+        }
+
+        .slide.title-slide .divider {
+            width: 90px;
+            height: 3px;
+            background: var(--hanko-rust);
+            margin: 10px auto;
+        }
+
+        .slide.title-slide .author {
+            font-size: 16px;
+            color: var(--sumi-ink);
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .slide.title-slide .meta {
+            border-top: 1px solid var(--border-light);
+            padding-top: 28px;
+            width: 100%;
+        }
+
+        .slide.title-slide .meta-item {
+            font-size: 13px;
+            color: var(--sumi-ink);
+            opacity: 0.65;
+            margin: 7px 0;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .slide.title-slide .meta-item a {
+            color: var(--hanko-rust);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .slide.title-slide .meta-item a:hover { text-decoration: underline; }
+
+        /* ===== SECTION DIVIDER SLIDES ===== */
+        .section-divider-content {
+            text-align: center;
+            max-width: 720px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            opacity: 0.6;
+            color: var(--sumi-ink);
+        }
+
+        .section-label.why { color: var(--hanko-rust); }
+        .section-label.how { color: #4F7896; }
+        .section-label.what { color: var(--positive-green); }
+
+        .section-title {
+            font-family: 'Archivo', serif;
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--sumi-ink);
+            line-height: 1.15;
+        }
+
+        .section-description {
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--sumi-ink);
+            opacity: 0.75;
+        }
+
+        .section-divider-bar {
+            width: 60px;
+            height: 4px;
+            background: var(--hanko-rust);
+            border-radius: 2px;
+        }
+
+        .section-divider-bar.how { background: #4F7896; }
+        .section-divider-bar.what { background: var(--positive-green); }
+
+        /* ===== CONTENT SLIDES ===== */
+        .slide-header {
+            flex-shrink: 0;
+        }
+
+        .slide-header h2 {
+            font-family: 'Archivo', serif;
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--sumi-ink);
+            border-bottom: 3px solid var(--hanko-rust);
+            padding-bottom: 10px;
+            margin-bottom: 6px;
+            line-height: 1.15;
+        }
+
+        .slide.section-how .slide-header h2 { border-bottom-color: #4F7896; }
+        .slide.section-what .slide-header h2 { border-bottom-color: var(--positive-green); }
+
+        .slide-header .subtitle {
+            font-size: 15px;
+            color: var(--sumi-ink);
+            opacity: 0.65;
+        }
+
+        /* ===== LAYOUTS ===== */
+        .layout-two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .layout-two-column .column {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .layout-single {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Content */
+        .content-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--sumi-ink);
+            opacity: 0.85;
+        }
+
+        .content-text p { margin-bottom: 14px; }
+        .content-text p:last-child { margin-bottom: 0; }
+        .content-text strong { font-weight: 700; color: var(--sumi-ink); opacity: 1; }
+
+        /* Lists */
+        .content-list { list-style: none; }
+
+        .content-list li {
+            padding: 13px 0 13px 28px;
+            font-size: 16px;
+            position: relative;
+            color: var(--sumi-ink);
+            opacity: 0.85;
+            line-height: 1.6;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .content-list li:last-child { border-bottom: none; }
+
+        .content-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--fox-orange);
+            font-weight: bold;
+        }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            padding: 18px 16px;
+            border-left: 4px solid var(--hanko-rust);
+        }
+
+        .metric-card.positive { border-left-color: var(--positive-green); }
+
+        .metric-card .label {
+            font-size: 11px;
+            color: var(--sumi-ink);
+            opacity: 0.55;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+
+        .metric-card .value {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--hanko-rust);
+            font-family: 'Archivo', serif;
+            line-height: 1;
+        }
+
+        .metric-card.positive .value { color: var(--positive-green); }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: rgba(199, 62, 29, 0.07);
+            border-left: 4px solid var(--hanko-rust);
+            padding: 18px 20px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--sumi-ink);
+        }
+
+        .highlight-box strong { color: var(--hanko-rust); font-weight: 700; }
+
+        /* Tables */
+        .table-container { width: 100%; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+        table thead { background: var(--hanko-rust); color: var(--rice-paper); }
+
+        table th { padding: 14px 16px; text-align: left; font-weight: 700; }
+
+        table td { padding: 13px 16px; border-bottom: 1px solid var(--border-light); }
+
+        table tbody tr:hover { background: rgba(199, 62, 29, 0.04); }
+
+        table tbody tr:last-child td { border-bottom: none; }
+
+        /* Charts */
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 360px;
+        }
+
+        .chart-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* ===== ROOT CAUSE VISUAL ===== */
+        .root-cause-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 28px;
+            flex: 1;
+        }
+
+        .segment-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 32px 20px 28px;
+            background: rgba(26, 26, 26, 0.03);
+            border-top: 5px solid;
+            gap: 10px;
+        }
+
+        .segment-card.budget { border-top-color: var(--positive-green); }
+        .segment-card.mid { border-top-color: var(--fox-orange); }
+        .segment-card.luxury { border-top-color: var(--hanko-rust); }
+
+        .seg-name {
+            font-family: 'Archivo', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--sumi-ink);
+            margin-bottom: 4px;
+        }
+
+        .seg-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .seg-sub {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            opacity: 0.5;
+        }
+
+        .seg-val {
+            font-size: 26px;
+            font-weight: 700;
+            font-family: 'Archivo', serif;
+            color: var(--sumi-ink);
+            line-height: 1.1;
+        }
+
+        .seg-arrow {
+            font-size: 44px;
+            line-height: 1;
+            font-weight: 700;
+        }
+
+        .seg-arrow.up { color: var(--positive-green); }
+        .seg-arrow.down { color: var(--hanko-rust); }
+
+        .seg-gap {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Archivo', serif;
+            padding: 4px 16px;
+        }
+
+        .seg-gap.pos {
+            color: var(--positive-green);
+            background: rgba(41, 92, 39, 0.1);
+        }
+
+        .seg-gap.neg {
+            color: var(--hanko-rust);
+            background: rgba(199, 62, 29, 0.1);
+        }
+
+        .seg-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--border-light);
+            margin: 4px 0;
+        }
+
+        .seg-booking-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            opacity: 0.5;
+        }
+
+        .seg-booking-val {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: 'Archivo', serif;
+            line-height: 1;
+        }
+
+        .seg-booking-val.pos { color: var(--positive-green); }
+        .seg-booking-val.neg { color: var(--hanko-rust); }
+
+        /* Footer */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 72px;
+            border-top: 1px solid var(--border-light);
+            background: var(--rice-paper);
+            flex-shrink: 0;
+        }
+
+        .slide-number {
+            font-size: 12px;
+            color: var(--sumi-ink);
+            opacity: 0.5;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-buttons { display: flex; gap: 12px; }
+
+        button {
+            padding: 9px 20px;
+            background: var(--hanko-rust);
+            color: var(--rice-paper);
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            transition: background 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        button:hover:not(:disabled) { background: var(--sumi-ink); }
+        button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        @media (max-width: 1024px) {
+            .slide { padding: 36px 32px 28px; }
+            .layout-two-column { grid-template-columns: 1fr; gap: 32px; }
+            .root-cause-grid { grid-template-columns: 1fr; gap: 16px; }
+            .slide-header h2 { font-size: 32px; }
+            .slide-footer { padding: 14px 32px; flex-direction: column-reverse; gap: 12px; }
+            .nav-buttons { width: 100%; }
+            .nav-buttons button { flex: 1; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="presentation-viewport">
+        <div class="slide-content">
+            <div id="slides-container"></div>
+        </div>
+        <footer class="slide-footer">
+            <span class="slide-number"><span id="current-slide">1</span> / <span id="total-slides">18</span></span>
+            <div class="nav-buttons">
+                <button id="prev-btn" onclick="previousSlide()">← Previous</button>
+                <button id="next-btn" onclick="nextSlide()">Next →</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function drawDoubleArrow(ctx, x, yTop, yBot, color, label) {
+            const h = 7;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(x, yTop + h + 1);
+            ctx.lineTo(x, yBot - h - 1);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x, yTop);
+            ctx.lineTo(x - h / 2, yTop + h);
+            ctx.lineTo(x + h / 2, yTop + h);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(x, yBot);
+            ctx.lineTo(x - h / 2, yBot - h);
+            ctx.lineTo(x + h / 2, yBot - h);
+            ctx.closePath();
+            ctx.fill();
+
+            if (label) {
+                ctx.font = 'bold 13px Inter, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(label, x + 10, (yTop + yBot) / 2 + 5);
+            }
+            ctx.restore();
+        }
+
+        function drawDashedRef(ctx, x1, y, x2, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(x1, y);
+            ctx.lineTo(x2, y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+
+        function makeGapPlugin(cfg) {
+            return {
+                id: 'gapAnnotation',
+                afterDraw(chart) {
+                    const ctx = chart.ctx;
+                    const yScale = chart.scales.y;
+                    const ca = chart.chartArea;
+
+                    const yHigh = yScale.getPixelForValue(cfg.highVal);
+                    const yLow = yScale.getPixelForValue(cfg.lowVal);
+
+                    drawDashedRef(ctx, ca.left, yHigh, ca.right, cfg.color);
+
+                    let arrowX = ca.right - 36;
+                    if (cfg.arrowBarIndex !== undefined) {
+                        const meta = chart.getDatasetMeta(0);
+                        const bar = meta.data[cfg.arrowBarIndex];
+                        if (bar) arrowX = bar.x;
+                    }
+
+                    drawDoubleArrow(ctx, arrowX, yHigh, yLow, cfg.color, cfg.label);
+                }
+            };
+        }
+
+        const slides = [
+            {
+                id: 1,
+                type: 'title',
+                title: 'Marketplace Analysis',
+                subtitle: 'Competitive Positioning Diagnosis',
+                author: 'Jason Kester Hanani',
+                meta: [
+                    '100,000 sample searches (2012–2013) from <a href="https://www.kaggle.com/competitions/expedia-personalized-sort/overview/description" target="_blank">Kaggle: Expedia Personalized Sort Challenge</a>',
+                    'Sample drawn from the full multi-million-row dataset',
+                    'April 18, 2026'
+                ]
+            },
+            {
+                id: 2,
+                type: 'section-divider',
+                section: 'why',
+                label: 'PART 1',
+                title: 'WHY',
+                subtitle: 'Understanding the Opportunity'
+            },
+            {
+                id: 3,
+                type: 'content',
+                layout: 'two-column',
+                section: 'why',
+                title: 'The Problem',
+                subtitle: 'Luxury segment underperforms dramatically',
+                left: {
+                    type: 'text',
+                    content: `
+                        <p><strong>Expedia's booking rate is 2.8% overall</strong>, but varies dramatically by segment:</p>
+                        <div class="metrics-grid">
+                            <div class="metric-card positive">
+                                <div class="label">Budget</div>
+                                <div class="value">3.04%</div>
+                            </div>
+                            <div class="metric-card positive">
+                                <div class="label">Mid</div>
+                                <div class="value">2.89%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="label">Luxury</div>
+                                <div class="value">2.20%</div>
+                            </div>
+                        </div>
+                        <div class="highlight-box">
+                            Luxury is <strong>27% lower</strong> than Budget.<br>Why?
+                        </div>
+                    `
+                },
+                right: {
+                    type: 'chart',
+                    chartType: 'bar',
+                    data: {
+                        labels: ['Budget', 'Mid', 'Luxury'],
+                        datasets: [{
+                            label: 'Booking Rate (%)',
+                            data: [3.04, 2.89, 2.20],
+                            backgroundColor: [
+                                'rgba(199, 62, 29, 0.85)',
+                                'rgba(199, 62, 29, 0.55)',
+                                'rgba(199, 62, 29, 0.28)'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    yAxisMax: 5,
+                    gapAnnotation: { highVal: 3.04, lowVal: 2.20, label: 'Δ27%', color: '#F07F2E' }
+                }
+            },
+            {
+                id: 4,
+                type: 'content',
+                layout: 'single',
+                section: 'why',
+                title: 'Methodology',
+                subtitle: 'Direct measurement of what drives conversions',
+                content: `
+                    <div class="content-text">
+                        <p>Unlike typical marketing analysis, we use <strong>outcome data</strong> to measure what actually drives conversions:</p>
+                        <ul class="content-list">
+                            <li>Direct measurement of funnel: Impression → Click → Booking</li>
+                            <li>Causal analysis enabled by outcome data (click_bool, booking_bool)</li>
+                            <li>Statistical comparison of conversion rates across segments</li>
+                            <li>Quantified impact of pricing, position, quality, and experience</li>
+                            <li>Data-driven prioritization of optimization levers</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                type: 'section-divider',
+                section: 'how',
+                label: 'PART 2',
+                title: 'HOW',
+                subtitle: 'Building the Evidence'
+            },
+            {
+                id: 6,
+                type: 'content',
+                layout: 'two-column',
+                section: 'how',
+                title: 'Finding 1: Price is NOT the Lever',
+                subtitle: 'Competitiveness = Market Parity (0.0%)',
+                left: {
+                    type: 'text',
+                    content: `
+                        <p><strong>Expedia prices at market equilibrium.</strong> Moving from overpriced to underpriced lifts bookings by only 0.83pp.</p>
+                        <div class="metrics-grid">
+                            <div class="metric-card positive">
+                                <div class="label">Underpriced</div>
+                                <div class="value">3.38%</div>
+                            </div>
+                            <div class="metric-card positive">
+                                <div class="label">At Parity</div>
+                                <div class="value">3.01%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="label">Overpriced</div>
+                                <div class="value">2.55%</div>
+                            </div>
+                        </div>
+                        <div class="highlight-box">
+                            Correlation to booking: <strong>+0.0289</strong><br>(negligible — price is not the lever)
+                        </div>
+                    `
+                },
+                right: {
+                    type: 'chart',
+                    chartType: 'bar',
+                    data: {
+                        labels: ['Underpriced', 'At Parity', 'Overpriced'],
+                        datasets: [{
+                            label: 'Booking Rate (%)',
+                            data: [3.38, 3.01, 2.55],
+                            backgroundColor: [
+                                'rgba(26, 26, 26, 0.25)',
+                                'rgba(26, 26, 26, 0.25)',
+                                'rgba(26, 26, 26, 0.25)'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    yAxisMax: 5,
+                    gapAnnotation: { highVal: 3.38, lowVal: 2.55, label: 'Δ0.83pp', color: '#C73E1D' }
+                }
+            },
+            {
+                id: 7,
+                type: 'content',
+                layout: 'two-column',
+                section: 'how',
+                title: 'Finding 2: Position = Strongest Lever',
+                subtitle: 'Position matters 5.22x more for booking',
+                left: {
+                    type: 'chart',
+                    chartType: 'bar',
+                    data: {
+                        labels: ['Pos 1', 'Pos 2', 'Pos 3', 'Pos 4', 'Pos 5', 'Pos 10'],
+                        datasets: [{
+                            label: 'Booking Rate (%)',
+                            data: [13.37, 7.5, 5.8, 4.2, 3.5, 2.56],
+                            backgroundColor: 'rgba(199, 62, 29, 0.8)',
+                            borderWidth: 0
+                        }]
+                    },
+                    yAxisMax: 15,
+                    gapAnnotation: { highVal: 13.37, lowVal: 2.56, label: '5.22x', color: '#F07F2E', arrowBarIndex: 5 }
+                },
+                right: {
+                    type: 'text',
+                    content: `
+                        <p><strong>Position 1 converts 5.22x better than Position 10.</strong></p>
+                        <div class="metrics-grid">
+                            <div class="metric-card positive">
+                                <div class="label">Position 1</div>
+                                <div class="value">13.37%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="label">Position 10</div>
+                                <div class="value">2.56%</div>
+                            </div>
+                            <div class="metric-card positive">
+                                <div class="label">Elasticity</div>
+                                <div class="value">5.22x</div>
+                            </div>
+                        </div>
+                        <div class="highlight-box">
+                            Booking elasticity (5.22x) is <strong>stronger than click elasticity (4.53x)</strong>. Position matters more for conversion than for visibility.
+                        </div>
+                    `
+                }
+            },
+            {
+                id: 8,
+                type: 'content',
+                layout: 'single',
+                section: 'how',
+                title: 'Finding 3: Quality Trust Gap = The Root Cause',
+                subtitle: 'Luxury buyers see 4.30★ promise but receive 4.20★ delivery',
+                content: `
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Segment</th>
+                                    <th>Star Rating (Promise)</th>
+                                    <th>Review Score (Actual)</th>
+                                    <th>Gap</th>
+                                    <th>Hotels Beating Promise</th>
+                                    <th>Booking Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Budget</strong></td>
+                                    <td>2.40★</td>
+                                    <td>3.39</td>
+                                    <td><span style="color: var(--positive-green); font-weight: 700;">+41%</span></td>
+                                    <td>78%</td>
+                                    <td><strong>3.04%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mid</strong></td>
+                                    <td>3.34★</td>
+                                    <td>3.97</td>
+                                    <td><span style="color: var(--positive-green); font-weight: 700;">+18%</span></td>
+                                    <td>73%</td>
+                                    <td><strong>2.89%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Luxury</strong></td>
+                                    <td>4.30★</td>
+                                    <td>4.20</td>
+                                    <td><span style="color: var(--hanko-rust); font-weight: 700;">-2.3%</span></td>
+                                    <td>39%</td>
+                                    <td><strong>2.20%</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="highlight-box">
+                        Only <strong>39%</strong> of luxury hotels beat their promise. <strong>31% fail expectations.</strong> Luxury buyers abandon when reality doesn't match the star rating.
+                    </div>
+                `
+            },
+            {
+                id: 9,
+                type: 'content',
+                layout: 'two-column',
+                section: 'how',
+                title: 'Finding 4: Experience Drives Trust',
+                subtitle: '1.34x lift for returning visitors',
+                left: {
+                    type: 'chart',
+                    chartType: 'bar',
+                    data: {
+                        labels: ['New Visitor', 'Returning'],
+                        datasets: [{
+                            label: 'Booking Rate (%)',
+                            data: [2.74, 3.66],
+                            backgroundColor: [
+                                'rgba(199, 62, 29, 0.45)',
+                                'rgba(41, 92, 39, 0.8)'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    yAxisMax: 5,
+                    gapAnnotation: { highVal: 3.66, lowVal: 2.74, label: '1.34x', color: '#295C27', arrowBarIndex: 0 }
+                },
+                right: {
+                    type: 'text',
+                    content: `
+                        <p><strong>Returning visitors book 1.34x more than new visitors.</strong></p>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="label">New Visitor</div>
+                                <div class="value">2.74%</div>
+                            </div>
+                            <div class="metric-card positive">
+                                <div class="label">Returning</div>
+                                <div class="value">3.66%</div>
+                            </div>
+                        </div>
+                        <div class="highlight-box">
+                            Click rates nearly identical (4.49% vs 4.61%), so visibility is not the differentiator.<br><strong>Trust is.</strong>
+                        </div>
+                    `
+                }
+            },
+            {
+                id: 10,
+                type: 'content',
+                layout: 'single',
+                section: 'how',
+                title: 'Key Finding: Ranking Quality is Equal',
+                subtitle: 'The problem is post-click conversion, not visibility',
+                content: `
+                    <div class="metrics-grid">
+                        <div class="metric-card positive">
+                            <div class="label">Budget Click Rate</div>
+                            <div class="value">4.6%</div>
+                        </div>
+                        <div class="metric-card positive">
+                            <div class="label">Mid Click Rate</div>
+                            <div class="value">4.7%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="label">Luxury Click Rate</div>
+                            <div class="value">4.1%</div>
+                        </div>
+                    </div>
+                    <div class="content-text">
+                        <p>Click rates are flat across all segments — Expedia's ranking algorithm surfaces relevant hotels equally well for every segment. The conversion collapse happens <strong>after the click</strong>.</p>
+                        <p><strong>This means:</strong> Ranking quality is NOT the problem. Quality trust and position are the real levers.</p>
+                    </div>
+                `
+            },
+            {
+                id: 11,
+                type: 'content',
+                layout: 'rootcause',
+                section: 'how',
+                title: 'Root Cause: Luxury Quality Gap',
+                subtitle: 'Why luxury booking rate is 27% lower than Budget'
+            },
+            {
+                id: 12,
+                type: 'section-divider',
+                section: 'what',
+                label: 'PART 3',
+                title: 'WHAT',
+                subtitle: 'Strategic Recommendations'
+            },
+            {
+                id: 13,
+                type: 'content',
+                layout: 'single',
+                section: 'what',
+                title: 'Recommendation 1: Fix Luxury Quality Gap',
+                subtitle: 'Audit and improve 4.3★-rated hotels',
+                content: `
+                    <div class="content-text">
+                        <ul class="content-list">
+                            <li><strong>Action 1:</strong> Identify 4.3★ luxury hotels that deliver &lt;4.0 review score (promise-delivery gap)</li>
+                            <li><strong>Action 2:</strong> Investigate root causes: outdated photos, missing amenities, poor maintenance</li>
+                            <li><strong>Action 3:</strong> Remove misaligned listings or require improvement before prominence</li>
+                            <li><strong>Action 4:</strong> Prioritize verified buyer ratings to build trust signals</li>
+                        </ul>
+                        <div class="highlight-box">
+                            <strong>Expected Impact:</strong> Close -2.3% gap to -1.0% → ~0.6pp lift in luxury booking rate
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 14,
+                type: 'content',
+                layout: 'single',
+                section: 'what',
+                title: 'Recommendation 2: Reallocate to High-Impact Levers',
+                subtitle: 'Stop optimizing price. Start optimizing quality & position.',
+                content: `
+                    <div class="content-text">
+                        <ul class="content-list">
+                            <li><strong>Position (5.22x elasticity):</strong> Highest ROI. Improve ranking for conversion signals, not just click relevance.</li>
+                            <li><strong>Quality (explains 27% variance):</strong> Fix luxury quality gap; build trust with verified reviews.</li>
+                            <li><strong>Experience (1.34x lift):</strong> Highlight returning visitor reviews; show historical booking patterns.</li>
+                            <li><strong>Price (+0.0289 correlation):</strong> STOP. Negligible impact. Don't waste resources here.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 15,
+                type: 'content',
+                layout: 'single',
+                section: 'what',
+                title: 'Implementation Roadmap',
+                subtitle: '8-week luxury audit & experimentation plan',
+                content: `
+                    <div class="content-text">
+                        <ul class="content-list">
+                            <li><strong>Phase 1 (Week 1–2):</strong> Audit 4.3★+ luxury hotels; flag promise-delivery gaps &gt;0.2★</li>
+                            <li><strong>Phase 2 (Week 3–4):</strong> Investigate root causes; require improvements or delist misaligned properties</li>
+                            <li><strong>Phase 3 (Week 5–6):</strong> Launch quality-based ranking experiment; measure booking lift</li>
+                            <li><strong>Phase 4 (Week 7–8):</strong> Roll out verified buyer ratings for luxury segment</li>
+                        </ul>
+                        <div class="highlight-box">
+                            <strong>Measurement:</strong> Track luxury booking rate lift from baseline 2.20%
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 16,
+                type: 'content',
+                layout: 'two-column',
+                section: 'what',
+                title: 'Success Metrics',
+                subtitle: 'Target 5% lift in luxury booking rate',
+                left: {
+                    type: 'text',
+                    content: `
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="label">Current</div>
+                                <div class="value">2.20%</div>
+                            </div>
+                            <div class="metric-card positive">
+                                <div class="label">Target</div>
+                                <div class="value">2.31%</div>
+                            </div>
+                            <div class="metric-card positive">
+                                <div class="label">Expected Lift</div>
+                                <div class="value">0.6pp</div>
+                            </div>
+                        </div>
+                    `
+                },
+                right: {
+                    type: 'text',
+                    content: `
+                        <div class="content-text">
+                            <p><strong>Primary driver:</strong> Narrow quality gap from -2.3% to -1.0% (0.6pp lift)</p>
+                            <p><strong>Secondary driver:</strong> Improved ranking for quality signals (additional ~0.3pp lift expected)</p>
+                            <p><strong>Measurement period:</strong> 8-week post-implementation monitoring</p>
+                            <p><strong>Success threshold:</strong> Achieve 2.28% luxury booking rate (3% lift minimum)</p>
+                        </div>
+                    `
+                }
+            },
+            {
+                id: 17,
+                type: 'content',
+                layout: 'single',
+                section: 'what',
+                title: 'A/B Tests & Validation',
+                subtitle: 'Beyond the initial luxury audit',
+                content: `
+                    <div class="content-text">
+                        <ul class="content-list">
+                            <li><strong>A/B Test 1:</strong> Show verified buyer ratings vs star ratings → measure booking lift</li>
+                            <li><strong>A/B Test 2:</strong> Highlight 'beats traveler expectations' badges → does signaling reduce abandonment?</li>
+                            <li><strong>Investigation:</strong> Are star ratings accurate? Analyze photo quality, review recency, maintenance signals</li>
+                            <li><strong>Expansion:</strong> Does quality gap exist in Budget/Mid? Investigate if similar fix applies broadly</li>
+                            <li><strong>Long-term:</strong> Build predictive model of quality perception using review sentiment, not just star ratings</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 18,
+                type: 'content',
+                layout: 'single',
+                section: 'what',
+                title: 'Summary: Data-Driven Insights',
+                subtitle: 'Quantified levers for conversion optimization',
+                content: `
+                    <div class="content-text">
+                        <ul class="content-list">
+                            <li><strong>Position (5.22x):</strong> Highest ROI lever for conversion improvement</li>
+                            <li><strong>Quality gap (-2.3% luxury):</strong> Root cause of 27% lower luxury booking rate</li>
+                            <li><strong>Experience (1.34x):</strong> Trust matters more than visibility for returning visitors</li>
+                            <li><strong>Price (+0.0289):</strong> Negligible impact — don't optimize</li>
+                            <li><strong>Ranking quality (4–5%):</strong> Equal across segments; problem is post-click conversion</li>
+                        </ul>
+                        <div class="highlight-box">
+                            <strong>Strategic Priority:</strong> Fix luxury quality gap → optimize position-based ranking → build trust signals. Ignore price optimization.
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let currentSlide = 0;
+        let chartInstances = {};
+
+        function destroyCharts() {
+            Object.values(chartInstances).forEach(c => c && c.destroy());
+            chartInstances = {};
+        }
+
+        function renderRootCause() {
+            return `
+                <div class="root-cause-grid">
+                    <div class="segment-card budget">
+                        <div class="seg-name">Budget</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Promise</span>
+                            <span class="seg-val">2.40★</span>
+                        </div>
+                        <div class="seg-arrow up">↑</div>
+                        <div class="seg-gap pos">+41% gap</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Delivers</span>
+                            <span class="seg-val">3.39 rating</span>
+                        </div>
+                        <div class="seg-divider"></div>
+                        <div class="seg-booking-label">Booking Rate</div>
+                        <div class="seg-booking-val pos">3.04%</div>
+                    </div>
+                    <div class="segment-card mid">
+                        <div class="seg-name">Mid</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Promise</span>
+                            <span class="seg-val">3.34★</span>
+                        </div>
+                        <div class="seg-arrow up">↑</div>
+                        <div class="seg-gap pos">+18% gap</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Delivers</span>
+                            <span class="seg-val">3.97 rating</span>
+                        </div>
+                        <div class="seg-divider"></div>
+                        <div class="seg-booking-label">Booking Rate</div>
+                        <div class="seg-booking-val pos">2.89%</div>
+                    </div>
+                    <div class="segment-card luxury">
+                        <div class="seg-name">Luxury</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Promise</span>
+                            <span class="seg-val">4.30★</span>
+                        </div>
+                        <div class="seg-arrow down">↓</div>
+                        <div class="seg-gap neg">−2.3% gap</div>
+                        <div class="seg-row">
+                            <span class="seg-sub">Delivers</span>
+                            <span class="seg-val">4.20 rating</span>
+                        </div>
+                        <div class="seg-divider"></div>
+                        <div class="seg-booking-label">Booking Rate</div>
+                        <div class="seg-booking-val neg">2.20%</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSlide(slideIndex) {
+            destroyCharts();
+            const slide = slides[slideIndex];
+            const container = document.getElementById('slides-container');
+            let html = '';
+
+            if (slide.type === 'title') {
+                html = `
+                    <div class="slide title-slide">
+                        <div class="slide-inner">
+                            <h1>${slide.title}</h1>
+                            <div class="subtitle">${slide.subtitle}</div>
+                            <div class="divider"></div>
+                            ${slide.author ? `<div class="author">${slide.author}</div>` : ''}
+                            <div class="meta">
+                                ${slide.meta.map(m => `<div class="meta-item">${m}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === 'section-divider') {
+                html = `
+                    <div class="slide section-divider section-${slide.section}">
+                        <div class="section-divider-content">
+                            <div class="section-label ${slide.section}">${slide.label}</div>
+                            <div class="section-title">${slide.title}</div>
+                            <div class="section-divider-bar ${slide.section}"></div>
+                            <div class="section-description">${slide.subtitle}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                let body = '';
+
+                if (slide.layout === 'two-column') {
+                    body = `<div class="layout-two-column">`;
+                    body += `<div class="column">`;
+                    if (slide.left.type === 'text') body += slide.left.content;
+                    else body += `<div class="chart-wrapper" id="chart-${slideIndex}-left"></div>`;
+                    body += `</div>`;
+                    body += `<div class="column">`;
+                    if (slide.right.type === 'text') body += slide.right.content;
+                    else body += `<div class="chart-wrapper" id="chart-${slideIndex}-right"></div>`;
+                    body += `</div></div>`;
+
+                } else if (slide.layout === 'rootcause') {
+                    body = renderRootCause();
+
+                } else {
+                    body = `<div class="layout-single">${slide.content}</div>`;
+                }
+
+                html = `
+                    <div class="slide content-slide section-${slide.section || 'none'}">
+                        <div class="slide-inner">
+                            <div class="slide-header">
+                                <h2>${slide.title}</h2>
+                                ${slide.subtitle ? `<div class="subtitle">${slide.subtitle}</div>` : ''}
+                            </div>
+                            ${body}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            document.getElementById('current-slide').textContent = slideIndex + 1;
+            document.getElementById('total-slides').textContent = slides.length;
+            document.getElementById('prev-btn').disabled = slideIndex === 0;
+            document.getElementById('next-btn').disabled = slideIndex === slides.length - 1;
+
+            setTimeout(() => {
+                if (slide.layout === 'two-column') {
+                    if (slide.left && slide.left.type === 'chart')
+                        renderChart(slideIndex, 'left', slide.left);
+                    if (slide.right && slide.right.type === 'chart')
+                        renderChart(slideIndex, 'right', slide.right);
+                }
+            }, 50);
+        }
+
+        function renderChart(slideIndex, position, chartConfig) {
+            const id = `chart-${slideIndex}-${position}`;
+            const wrapper = document.getElementById(id);
+            if (!wrapper) return;
+
+            let canvas = wrapper.querySelector('canvas');
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                wrapper.appendChild(canvas);
+            }
+
+            const ctx = canvas.getContext('2d');
+            const yMax = chartConfig.yAxisMax || 15;
+
+            const plugins = [];
+            if (chartConfig.gapAnnotation) {
+                plugins.push(makeGapPlugin(chartConfig.gapAnnotation));
+            }
+
+            const chart = new Chart(ctx, {
+                type: chartConfig.chartType,
+                data: chartConfig.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: { right: 60 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: yMax,
+                            grid: {
+                                color: 'rgba(26, 26, 26, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: { size: 11, family: 'Inter' },
+                                color: 'rgba(26, 26, 26, 0.55)',
+                                padding: 8
+                            }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: {
+                                font: { size: 11, family: 'Inter' },
+                                color: 'rgba(26, 26, 26, 0.55)',
+                                padding: 8
+                            }
+                        }
+                    }
+                },
+                plugins: plugins
+            });
+
+            chartInstances[id] = chart;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                renderSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide(currentSlide);
+            }
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        renderSlide(0);
+    </script>
+</body>
+
+</html>
