@@ -147,12 +147,12 @@ git commit -m "task: setup notebook, load train.csv, verify outcome data"
 
 ---
 
-### Task 2: Verify & Enrich Data with Competitiveness & Segmentation
+### Task 2: Enrich Data with Competitiveness & Segmentation
 
 **Files:**
 - Modify: `analysis/notebooks/2026-04-18-marketplace-analysis.ipynb`
 
-**Background:** The position column in the data has gaps (positions 5, 11, 17, 23 missing), likely from filtering or A/B testing. We'll regenerate it as true ranking position. Then add two derived columns:
+**Background:** The position column represents actual hotel ranking shown to users. Gaps in positions are real data (indicate what was displayed). We keep it unchanged and add two derived columns:
 1. **Competitiveness Score**: Percentage difference vs competitors (from comp*_rate_percent_diff)
 2. **Market Segment**: Budget/Mid/Luxury classification (based on price & rating)
 
@@ -164,16 +164,16 @@ git commit -m "task: setup notebook, load train.csv, verify outcome data"
 # Cell 6: Markdown
 ## Part 2: Data Enrichment & Validation
 
-### 2.1 Position Column Regeneration
+### 2.1 Position Column (Use As-Is)
 
-The dataset includes a `position` column with gaps (positions 5, 11, 17, 23 missing), indicating it may be from filtered/A/B test data. We'll regenerate true ranking position as row order within each search.
+The `position` column represents actual hotel ranking shown to users. Gaps in positions (e.g., 5, 11, 17, 23 missing) are REAL DATA indicating which positions were displayed. We keep it unchanged for authentic analysis of user behavior.
 
 ### 2.2 Competitiveness Score
 
 We'll calculate price competitiveness relative to competitors:
 - **Source:** comp*_rate_percent_diff (actual % difference vs competitors)
 - **Metric:** Average % difference across all available competitors
-- Positive = overpriced vs competitors, Negative = underpriced
+- Positive % = overpriced vs competitors, Negative % = underpriced
 
 **Why:** Understand if hotels are competitively positioned relative to direct competitors.
 
@@ -187,26 +187,21 @@ We'll classify hotels into segments based on price and rating:
 **Why:** Enable segment-level analysis of competitive dynamics and booking behavior.
 ```
 
-- [ ] **Step 2: Regenerate position column**
+- [ ] **Step 2: Verify position column and explain gaps**
 
 ```python
 # Cell 7: Code
-print("Regenerating Position Column (True Ranking Position)...")
-print(f"Before: position range {df['position'].min():.0f}–{df['position'].max():.0f}')
-
-# Recalculate position as row order within each search
-df['position'] = df.groupby('srch_id').cumcount() + 1
-
-print(f'After: position range {df["position"].min():.0f}–{df["position"].max():.0f}')
-print(f"\nPosition distribution:")
+print("Position Column (Actual Ranking on Search Results Page)...")
+print(f"Min position: {df['position'].min():.0f}")
+print(f"Max position: {df['position'].max():.0f}")
+print(f"Unique positions: {df['position'].nunique()}")
+print(f"\nPosition distribution (sample):")
 print(df['position'].value_counts().sort_index().head(10))
-
-print(f"\nPosition stats by search:")
-position_stats = df.groupby('srch_id')['position'].agg(['count', 'min', 'max', 'mean'])
-print(position_stats.describe())
+print(f"\nNote: Gaps in positions are REAL DATA")
+print(f"      They indicate which positions were shown to users")
 ```
 
-Expected: Position 1–16, with roughly 20k rows at each position (10k unique searches × ~5 hotels each).
+Expected: Gaps exist (e.g., 5, 11, 17, 23 missing); we analyze as-is.
 
 - [ ] **Step 3: Add competitiveness score (with outlier handling)**
 
@@ -324,7 +319,7 @@ print([col for col in analysis_cols if col in df.columns])
 
 ```bash
 git add analysis/notebooks/2026-04-18-marketplace-analysis.ipynb
-git commit -m "task: verify position, add competitiveness score, segment market"
+git commit -m "task: verify position (keep original), add competitiveness score, segment market"
 ```
 
 ---
@@ -333,11 +328,13 @@ git commit -m "task: verify position, add competitiveness score, segment market"
 
 After completing Task 2, explain back in your own words:
 
-1. **Position Column:** What values does it contain? How are hotels ordered within a search?
+1. **Position Column:** 
+   - What does it represent (from data definitions)?
+   - Why do we keep gaps in position? What might they tell us?
 2. **Competitiveness Score:** 
-   - How is it calculated?
-   - What does a positive value mean? Negative?
-   - Why did we cap at ±$1000?
+   - How is it calculated (formula)?
+   - What does a positive % mean? Negative %?
+   - Why use comp*_rate_percent_diff and NOT comp*_rate?
 3. **Market Segments:**
    - What are the price thresholds for each segment?
    - Which segment has the highest booking rate? Why?
@@ -590,6 +587,7 @@ Before moving to the next analysis, answer:
 1. What's the correlation between position and star rating? Does it suggest ranking logic is quality-aware?
 2. Do branded hotels rank higher than non-branded? By how much?
 3. Looking at the charts, does ranking seem fair, or are there high-quality hotels buried at lower positions?
+4. Do the gaps in the original position column suggest intentional filtering or A/B testing?
 
 ---
 
@@ -1496,4 +1494,6 @@ git commit -m "deliverable: compile 12-15 slide consultant deck"
 - [ ] All analyses have interpretation checkpoints completed
 - [ ] Recommendations framed as hypotheses (not certainties)
 - [ ] Data gaps and limitations documented
+- [ ] Position column kept original (not regenerated)
+- [ ] Competitiveness uses comp*_rate_percent_diff (%)
 - [ ] All commits pushed
