@@ -157,53 +157,75 @@ class SocialCopySkill:
 
         metric_str = " | ".join([f"{m.get('label')}: {m.get('value')}" for m in metrics[:2]])
 
-        # Variant A: Direct impact statement
-        var_a = f"{insight}\n\n📊 {metric_str}\n\n{takeaway}"
+        # Variant A: Direct impact statement (authority tone)
+        var_a = f"{insight}\n\n📊 {metric_str}\n\n{takeaway}\n\nRead the full analysis on my website →"
 
-        # Variant B: Contrarian/provocative (fix for weak "What if")
-        var_b = f"Most people get this wrong: {insight.lower()}\n\n📊 {metric_str}\n\n{takeaway}"
+        # Variant B: Contrarian/provocative (curiosity-driven)
+        var_b = f"Most people get {title.lower()} wrong.\n\nHere's what the data actually shows: {insight}\n\n📊 {metric_str}\n\nFull breakdown →"
 
-        # Variant C: Data-driven narrative
-        var_c = f"Here's what {metric_str} actually tells us:\n\n{insight}\n\n{takeaway}"
+        # Variant C: Question-based narrative (engagement-driven)
+        var_c = f"What if everything you thought about {title.lower()} was backwards?\n\n{insight}\n\n📊 {metric_str}\n\nThe implications? {takeaway}"
 
         return [var_a, var_b, var_c]
 
     def _generate_instagram_variants(self, carousel: Dict) -> List[str]:
-        """Generate 3 distinct Instagram variants"""
+        """Generate 3 distinct Instagram variants optimized for engagement"""
         insight = carousel.get('key_insight', '')
         metrics = carousel.get('metrics', [])
+        title = carousel.get('title', '')
 
         metric_str = f"{metrics[0].get('label')}: {metrics[0].get('value')}" if metrics else "Key insight"
 
-        # Variant A: Plot twist (high engagement)
-        var_a = f"Plot twist: {insight}\n\n📊 {metric_str}\n\nFull breakdown 🔗 Link in bio\n\n#dataanalysis #insights"
+        # Variant A: Plot twist (stop-scroll hook, highest engagement)
+        var_a = f"Plot twist 🔄\n\n{insight}\n\n📊 {metric_str}\n\nFull breakdown 🔗 Link in bio\n\n#dataanalysis #insights #casestudy"
 
-        # Variant B: Myth-busting angle
-        var_b = f"🚨 Myth: {carousel.get('title')}\n\nReality: {insight}\n\n📊 {metric_str}\n\n#casestudy #data"
+        # Variant B: Myth-busting angle (contrarian, save-worthy)
+        var_b = f"❌ Everyone thinks: {title.lower()}\n✅ Reality: {insight}\n\n📊 {metric_str}\n\nSave this 👆\n\n#data #myth #research"
 
-        # Variant C: Question hook (high comments)
-        var_c = f"Why? {insight}\n\n📊 {metric_str}\n\nFull story on my website 🔗\n\n#research #analysis"
+        # Variant C: Question hook (comment-bait, discussion-starter)
+        var_c = f"Why is this important?\n\n{insight}\n\n📊 {metric_str}\n\nComment your thoughts 👇\n\nFull story 🔗 Bio link\n\n#analysis #casestudy"
 
         return [var_a, var_b, var_c]
 
     def _generate_twitter_variants(self, carousel: Dict) -> List[str]:
-        """Generate 3 distinct Twitter thread variants with real data"""
+        """Generate 3 distinct Twitter thread variants with full narrative structure"""
         insight = carousel.get('key_insight', '')
         insights = carousel.get('insights', [])
         takeaway = carousel.get('takeaway', '')
         metrics = carousel.get('metrics', [])
+        title = carousel.get('title', '')
 
-        metric_data = " ".join([f"{m.get('value')}" for m in metrics[:2]]) if metrics else ""
+        # Variant A: Data paradox thread (contrarian, research-focused)
+        metric_1 = f"{metrics[0].get('value')}" if metrics else ""
+        metric_2 = f"{metrics[1].get('value')}" if len(metrics) > 1 else ""
+        var_a = (
+            f"{insight} 🧵\n\n"
+            f"1️⃣ Most people think {title.lower()} matters because X\n\n"
+            f"2️⃣ But {metric_1} tells a different story\n\n"
+            f"3️⃣ {takeaway}\n\n"
+            f"Full analysis: [link]"
+        )
 
-        # Variant A: Data paradox thread (contrarian)
-        var_a = f"{insight} 🧵\n\nHere's what {metric_data} actually reveals:\n\n{takeaway}"
+        # Variant B: Problem-solution-impact thread (actionable)
+        insight_1 = insights[0].get('headline', 'The core issue') if insights else 'The core issue'
+        insight_2 = insights[1].get('headline', 'Second insight') if len(insights) > 1 else 'Deeper insight'
+        var_b = (
+            f"Problem: {title} 🧵\n\n"
+            f"1️⃣ {insight_1}\n\n"
+            f"2️⃣ {insight_2}\n\n"
+            f"3️⃣ Solution: {takeaway}\n\n"
+            f"Read more: [link]"
+        )
 
-        # Variant B: Problem-solution thread (actionable)
-        insight_1 = insights[0].get('headline', '') if insights else 'Finding 1'
-        var_b = f"Problem: {carousel.get('title')} 🧵\n\n1️⃣ {insight_1}\n\n2️⃣ {takeaway}\n\n3️⃣ Here's why it matters"
-
-        # Variant C: Misconception-correction thread (educational)
-        var_c = f"Common belief: {carousel.get('title', 'this')}\n\nThe data: {insight} 🧵\n\nWhy? {takeaway}"
+        # Variant C: Misconception-correction thread (myth-busting)
+        var_c = (
+            f"Myth: {title} is about {title.lower()}\n\n"
+            f"Reality: {insight} 🧵\n\n"
+            f"1️⃣ Evidence: {metric_1}\n\n"
+            f"2️⃣ What it means: {takeaway}\n\n"
+            f"3️⃣ What to do about it: [your recommendation]\n\n"
+            f"Full case study: [link]"
+        )
 
         return [var_a, var_b, var_c]
 
@@ -250,26 +272,150 @@ class SocialCopySkill:
         return refined
 
     def _apply_refinement(self, variant: str, refinement_prompt: str) -> str:
-        """Apply user feedback to variant"""
-        refinements = {
-            'punch': lambda v: v.replace('\n\n', '\n').replace('📊', '⚡'),
-            'punchier': lambda v: v.replace('\n\n', '\n').replace('📊', '⚡'),
-            'shorter': lambda v: '\n'.join(v.split('\n')[:2]),
-            'longer': lambda v: v + '\n\nRead more on my website for full details.',
-            'casual': lambda v: v.replace('📊', '🎯').replace('data', 'findings'),
-            'professional': lambda v: v.replace('🚨', '📊').replace('Plot twist', 'Key finding'),
-            'bold': lambda v: f"💪 {v}",
-            'question': lambda v: f"Why {v.lower()}?" if not v.startswith('Why') else v,
-            'statement': lambda v: v.replace('?', '.'),
+        """Apply intelligent user feedback to variant"""
+        refinement_lower = refinement_prompt.lower()
+
+        # Sophisticated refinement transformations
+        transformations = {
+            # Tone adjustments
+            'punch': self._make_punchier,
+            'punchier': self._make_punchier,
+            'punchy': self._make_punchier,
+            'bold': lambda v: f"🔥 {v}" if not v.startswith('🔥') else v,
+            'aggressive': lambda v: v.replace('could', 'will').replace('may', 'will'),
+
+            # Length adjustments
+            'shorter': self._make_shorter,
+            'concise': self._make_shorter,
+            'brief': self._make_shorter,
+            'longer': lambda v: v + "\n\nMore details available on my website →",
+            'expand': lambda v: v + "\n\nHere's why this matters: [full context]",
+
+            # Tone shifts
+            'casual': self._make_casual,
+            'conversational': self._make_casual,
+            'friendly': self._make_casual,
+            'professional': self._make_professional,
+            'formal': self._make_professional,
+            'corporate': self._make_professional,
+
+            # Hook/angle shifts
+            'question': self._make_question,
+            'question_hook': self._make_question,
+            'statement': self._make_statement,
+            'bold_statement': self._make_statement,
+            'contrarian': self._make_contrarian,
+            'controversial': self._make_contrarian,
+            'surprising': self._make_surprising,
+
+            # Data emphasis
+            'data_heavy': self._emphasize_data,
+            'metrics': self._emphasize_data,
+            'numbers': self._emphasize_data,
+            'less_data': self._deemphasize_data,
+            'less_numbers': self._deemphasize_data,
+
+            # Engagement hooks
+            'engaging': self._add_engagement,
+            'viral': self._add_engagement,
+            'shareworthy': self._add_engagement,
         }
 
-        # Match refinement keywords
-        for key, transform in refinements.items():
-            if key.lower() in refinement_prompt.lower():
-                return transform(variant)
+        # Try to match refinement keywords
+        for key, transform in transformations.items():
+            if key in refinement_lower:
+                result = transform(variant)
+                log_progress(f"  Applied '{key}' transformation")
+                return result
 
-        # Default: just note the refinement was requested
-        return f"{variant}\n\n[Note: {refinement_prompt}]"
+        # Default: note that refinement was received
+        return f"{variant}\n\n📝 [Refinement requested: {refinement_prompt}]"
+
+    def _make_punchier(self, text: str) -> str:
+        """Make text more punchy and direct"""
+        result = text
+        # Remove extra whitespace
+        result = '\n'.join([line.strip() for line in result.split('\n')])
+        # Replace explanations with action verbs
+        result = result.replace('Here is what', 'Here's what')
+        result = result.replace('Here are', 'Here\'s')
+        # Add power words
+        if 'Most people' not in result:
+            result = result.replace('People', 'Most people').replace('think', 'get wrong')
+        return result
+
+    def _make_shorter(self, text: str) -> str:
+        """Reduce text length, keep main points"""
+        lines = text.split('\n')
+        # Keep first 3 non-empty lines
+        kept = []
+        for line in lines:
+            if line.strip() and len(kept) < 3:
+                kept.append(line)
+        return '\n'.join(kept)
+
+    def _make_casual(self, text: str) -> str:
+        """Make tone more casual and conversational"""
+        result = text
+        result = result.replace('📊', '🎯').replace('📈', '📊')
+        result = result.replace('analysis', 'findings').replace('data reveals', 'data shows')
+        result = result.replace('reveals', 'shows').replace('demonstrates', 'shows')
+        return result
+
+    def _make_professional(self, text: str) -> str:
+        """Make tone more professional and formal"""
+        result = text
+        result = result.replace('Plot twist', 'Key finding').replace('🚨', '📊')
+        result = result.replace('people think', 'research suggests')
+        return result
+
+    def _make_question(self, text: str) -> str:
+        """Reframe as question"""
+        if text.startswith('Why') or '?' in text[:30]:
+            return text
+        return f"Why {text.lower()}?" if not text.lower().startswith('why') else text
+
+    def _make_statement(self, text: str) -> str:
+        """Make it a bold statement"""
+        result = text.replace('?', '.').replace('Could', 'Will').replace('May', 'Does')
+        if not result.startswith('🔥') and not result.startswith('💪'):
+            result = f"💪 {result}"
+        return result
+
+    def _make_contrarian(self, text: str) -> str:
+        """Make it more contrarian and provocative"""
+        result = text
+        if 'Most people' not in result:
+            result = result.replace('Everyone', 'Most people').replace('thinks', 'get wrong')
+        result = result.replace('may', 'will').replace('could', 'does')
+        return result
+
+    def _make_surprising(self, text: str) -> str:
+        """Emphasize surprising elements"""
+        result = text
+        if '🔄' not in result and '⚡' not in result and '🤯' not in result:
+            result = f"🤯 {result}"
+        result = result.replace('found', 'discovered').replace('shows', 'reveals')
+        return result
+
+    def _emphasize_data(self, text: str) -> str:
+        """Add more data and metrics"""
+        result = text
+        if '📊' not in result:
+            result = result.replace('\n\n', '\n\n📊 ')
+        return result
+
+    def _deemphasize_data(self, text: str) -> str:
+        """Remove or reduce data mentions"""
+        result = text.replace('📊', '').replace('metrics:', '').replace('data:', '')
+        return result
+
+    def _add_engagement(self, text: str) -> str:
+        """Add engagement hooks (questions, calls to action)"""
+        result = text
+        if 'Comment' not in result and '?' not in result:
+            result += "\n\nWhat's your take? 👇"
+        return result
 
     def save_variants_to_file(self, result: Dict, output_dir: Optional[str] = None):
         """Save generated variants to file"""
@@ -316,13 +462,36 @@ class SocialCopySkill:
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="Social Copy Generation Skill - Progressive copy creation with memory")
+    parser = argparse.ArgumentParser(
+        description="Social Copy Generation Skill - Progressive copy creation with memory & refinement",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+EXAMPLES:
+  # Generate LinkedIn variants
+  python social_copy_skill.py --project "Expedia..." --platform linkedin --save
+
+  # Generate all platforms for carousel 2
+  python social_copy_skill.py --project "Expedia..." --platform all --carousel 2
+
+  # Refine existing variants
+  python social_copy_skill.py --project "Expedia..." --refine "make it punchier"
+
+  # View memory
+  python social_copy_skill.py --project "Expedia..." --memory
+
+  # Batch generate all carousels
+  python social_copy_skill.py --project "Expedia..." --batch --platforms linkedin instagram twitter
+        """
+    )
     parser.add_argument("--project", required=True, help="Project name (e.g., 'Expedia Marketplace Analysis')")
-    parser.add_argument("--platform", help="Platform (linkedin, instagram, twitter)")
+    parser.add_argument("--platform", help="Platform: linkedin, instagram, twitter, or 'all' for all platforms")
     parser.add_argument("--carousel", type=int, help="Carousel number (1, 2, 3...)")
-    parser.add_argument("--refine", help="Refinement prompt (e.g., 'make it punchier')")
+    parser.add_argument("--refine", help="Refinement prompt (e.g., 'make it punchier', 'more casual', 'bold statement')")
     parser.add_argument("--save", action="store_true", help="Save to file")
     parser.add_argument("--memory", action="store_true", help="Show memory of all generated copies")
+    parser.add_argument("--batch", action="store_true", help="Batch generate all carousels")
+    parser.add_argument("--platforms", nargs="+", default=["linkedin", "instagram", "twitter"], help="Platforms for batch mode")
+    parser.add_argument("--compare", action="store_true", help="Show side-by-side comparison of variants")
 
     args = parser.parse_args()
 
@@ -333,26 +502,62 @@ def main():
             skill.list_all_generated()
             return
 
+        # Batch mode: generate all carousels for specified platforms
+        if args.batch:
+            log_progress(f"\n{'='*60}")
+            log_progress("BATCH GENERATION MODE", "🚀")
+            log_progress(f"{'='*60}\n")
+
+            carousels = skill.project_config.get('carousels', [])
+            for carousel_idx, carousel in enumerate(carousels, 1):
+                log_progress(f"\n📋 Carousel {carousel_idx}: {carousel.get('title')}")
+                for platform in args.platforms:
+                    result = skill.generate_variants(platform, carousel_idx)
+                    if args.save:
+                        skill.save_variants_to_file(result)
+                    log_progress(f"  ✓ {platform.title()}: 3 variants saved")
+            return
+
         if not args.platform:
-            log_error("Missing argument", Exception("--platform required (linkedin, instagram, twitter)"))
+            log_error("Missing argument", Exception("--platform required (linkedin, instagram, twitter, or 'all')"))
             sys.exit(1)
 
-        # Generate variants
-        result = skill.generate_variants(args.platform, args.carousel)
+        # Handle 'all' platform shortcut
+        platforms_to_generate = args.platform.split(',') if ',' in args.platform else [args.platform]
+        if 'all' in platforms_to_generate:
+            platforms_to_generate = ['linkedin', 'instagram', 'twitter']
 
-        # Display variants
-        log_progress(f"\n{'='*60}")
-        log_progress("GENERATED VARIANTS")
-        log_progress(f"{'='*60}\n")
-        for i, variant in enumerate(result['variants'], 1):
-            log_progress(f"\n{'='*40}")
-            log_progress(f"VARIANT {chr(64+i)} (Option {i})")
-            log_progress(f"{'='*40}\n")
-            print(variant)
+        # Generate for each platform
+        all_results = []
+        for platform in platforms_to_generate:
+            if platform.lower() not in ['linkedin', 'instagram', 'twitter']:
+                log_progress(f"⚠️  Skipping unknown platform: {platform}")
+                continue
 
-        # Save if requested
-        if args.save:
-            skill.save_variants_to_file(result)
+            result = skill.generate_variants(platform.lower(), args.carousel)
+            all_results.append(result)
+
+            # Display variants
+            log_progress(f"\n{'='*60}")
+            log_progress(f"{platform.upper()} VARIANTS")
+            log_progress(f"{'='*60}\n")
+
+            for i, variant in enumerate(result['variants'], 1):
+                log_progress(f"\n{'='*40}")
+                log_progress(f"VARIANT {chr(64+i)} (Option {i})")
+                log_progress(f"{'='*40}\n")
+                print(variant)
+
+            if args.save:
+                skill.save_variants_to_file(result)
+
+        # Show comparison if requested
+        if args.compare and len(all_results) > 1:
+            log_progress(f"\n{'='*60}")
+            log_progress("COMPARISON: All Platforms", "🔄")
+            log_progress(f"{'='*60}\n")
+            for result in all_results:
+                log_progress(f"\n{result['platform'].upper()} - Variant A:\n{result['variants'][0]}\n")
 
     except Exception as e:
         log_error("Skill execution", e)
