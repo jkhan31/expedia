@@ -527,8 +527,9 @@
         }
 
         // Factory: creates a Chart.js plugin that draws a gap annotation
+        // cfg: { highVal, lowVal, label, color, arrowBarIndex? }
+        // arrowBarIndex: if set, positions the arrow at that bar's center x; otherwise defaults to right side
         function makeGapPlugin(cfg) {
-            // cfg: { highVal, lowVal, label, color }
             return {
                 id: 'gapAnnotation',
                 afterDraw(chart) {
@@ -542,8 +543,14 @@
                     // Dashed reference line at highVal across full chart area
                     drawDashedRef(ctx, ca.left, yHigh, ca.right, cfg.color);
 
-                    // Double arrow on the right side inside chart area
-                    const arrowX = ca.right - 36;
+                    // Arrow x: at a specific bar center, or default to right side
+                    let arrowX = ca.right - 36;
+                    if (cfg.arrowBarIndex !== undefined) {
+                        const meta = chart.getDatasetMeta(0);
+                        const bar = meta.data[cfg.arrowBarIndex];
+                        if (bar) arrowX = bar.x;
+                    }
+
                     drawDoubleArrow(ctx, arrowX, yHigh, yLow, cfg.color, cfg.label);
                 }
             };
@@ -668,11 +675,16 @@
                         datasets: [{
                             label: 'Booking Rate (%)',
                             data: [3.38, 3.01, 2.55],
-                            backgroundColor: 'rgba(240, 127, 46, 0.7)',
+                            backgroundColor: [
+                                'rgba(26, 26, 26, 0.25)',
+                                'rgba(26, 26, 26, 0.25)',
+                                'rgba(26, 26, 26, 0.25)'
+                            ],
                             borderWidth: 0
                         }]
                     },
-                    yAxisMax: 5
+                    yAxisMax: 5,
+                    gapAnnotation: { highVal: 3.38, lowVal: 2.55, label: 'Δ0.83pp', color: '#C73E1D' }
                 }
             },
             {
@@ -693,7 +705,8 @@
                             borderWidth: 0
                         }]
                     },
-                    yAxisMax: 15
+                    yAxisMax: 15,
+                    gapAnnotation: { highVal: 13.37, lowVal: 2.56, label: '5.22x', color: '#F07F2E', arrowBarIndex: 5 }
                 },
                 right: {
                     type: 'text',
@@ -793,7 +806,7 @@
                         }]
                     },
                     yAxisMax: 5,
-                    gapAnnotation: { highVal: 3.66, lowVal: 2.74, label: '1.34x', color: '#295C27' }
+                    gapAnnotation: { highVal: 3.66, lowVal: 2.74, label: '1.34x', color: '#295C27', arrowBarIndex: 0 }
                 },
                 right: {
                     type: 'text',
