@@ -94,25 +94,29 @@
 - [x] All outputs match expected findings
 - [x] Findings Summary report created: `analysis/FINDINGS_SUMMARY.md`
 
-### Consultant Deck (PowerPoint) — IN PROGRESS
-- [ ] Create: `presentations/Expedia-Marketplace-Analysis.pptx`
+### Consultant Deck (McKinsey-Style HTML) — ✓ COMPLETE
+- [x] Create: `presentations/Expedia-Marketplace-Analysis.html`
+- [x] 15-slide presentation with professional design and interactive navigation
+- [x] All findings integrated with metrics, insights, and recommendations
+- [x] Responsive design suitable for web deployment
+- [x] Keyboard navigation (← → arrow keys) and button controls
 
-**Slide Structure (12-15 slides):**
-- [ ] 1. Title: Marketplace Analysis — Competitive Positioning Diagnosis
-- [ ] 2. Problem Statement: 2.8% booking rate; Luxury 27% lower than Budget
-- [ ] 3. Methodology: Causal measurement with outcome data
-- [ ] 4. Finding 1: Competitiveness = 0.0% (market parity, not overpriced)
-- [ ] 5. Finding 2: Ranking quality = equal (4-5% click rate across segments)
-- [ ] 6. Finding 3: Position elasticity = 5.22x for bookings (strongest lever)
-- [ ] 7. Finding 4: Quality trust gap = -2.3% for Luxury (promise vs delivery)
-- [ ] 8. Finding 5: Price correlation = +0.0289 (negligible effect)
-- [ ] 9. Finding 6: User experience = 1.34x lift for returning visitors
-- [ ] 10. Root Cause: Luxury quality gap explains booking decline
-- [ ] 11. Recommendation 1: Fix luxury quality gap (audit 4.3★ hotels)
-- [ ] 12. Recommendation 2: Prioritize position and quality over price optimization
-- [ ] 13. Implementation Plan: Start with luxury segment audit
-- [ ] 14. Success Metrics: 5% lift in luxury booking rate
-- [ ] 15. Next Steps: A/B test quality signals, verify star rating accuracy
+**Slide Structure (15 slides completed):**
+- [x] 1. Title: Marketplace Analysis — Competitive Positioning Diagnosis
+- [x] 2. Problem Statement: 2.8% booking rate; Luxury 27% lower than Budget
+- [x] 3. Methodology: Causal measurement with outcome data
+- [x] 4. Finding 1: Competitiveness = 0.0% (market parity, not overpriced)
+- [x] 5. Finding 2: Ranking quality = equal (4-5% click rate across segments)
+- [x] 6. Finding 3: Position elasticity = 5.22x for bookings (strongest lever)
+- [x] 7. Finding 4: Quality trust gap = -2.3% for Luxury (promise vs delivery)
+- [x] 8. Finding 5: Price correlation = +0.0289 (negligible effect)
+- [x] 9. Finding 6: User experience = 1.34x lift for returning visitors
+- [x] 10. Root Cause: Luxury quality gap explains booking decline
+- [x] 11. Recommendation 1: Fix luxury quality gap (audit 4.3★ hotels)
+- [x] 12. Recommendation 2: Prioritize position and quality over price optimization
+- [x] 13. Implementation Plan: Start with luxury segment audit
+- [x] 14. Success Metrics: 5% lift in luxury booking rate
+- [x] 15. Next Steps: A/B test quality signals, verify star rating accuracy
 
 ---
 
@@ -120,9 +124,10 @@
 
 - [x] Verify all notebook outputs are correct
 - [x] Create findings summary report
-- [ ] **Build PowerPoint consultant deck (12-15 slides)**
-- [ ] Review deck for PM-level clarity and storytelling
-- [ ] Commit notebook + deck + report to main
+- [x] **Build McKinsey-style HTML consultant deck (15 slides)**
+- [x] Interactive navigation with keyboard controls
+- [ ] Deploy to personal website (jasonkhanani.com)
+- [ ] Commit all deliverables to main
 - [ ] Push to origin
 
 ---
