@@ -1,0 +1,100 @@
+{
+  "project_name": "PROJECT_NAME_HERE",
+  "date": "2026-04-18",
+  "project_type": "data_analysis",
+  "description": "Brief description of the project",
+  "website_link": "https://yourwebsite.com/project-url",
+  "source_deliverable": "presentations/deck.pptx",
+  "carousels": [
+    {
+      "carousel_number": 1,
+      "title": "Carousel 1: Problem Statement",
+      "subtitle": "Why this matters",
+      "key_insight": "Main insight or hook",
+      "cta_message": "Read the full case study",
+      "cta_button_text": "Learn More",
+      "insights": [
+        {
+          "headline": "Finding 1",
+          "metric_label": "Key Metric",
+          "metric_value": "X% higher / X times better",
+          "description": "Why this matters and what it means"
+        },
+        {
+          "headline": "Finding 2",
+          "metric_label": "Second Metric",
+          "metric_value": "Y% increase",
+          "description": "Context and implications"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Key Finding",
+          "value": "42% improvement"
+        },
+        {
+          "label": "Impact",
+          "value": "3x better conversion"
+        }
+      ],
+      "takeaway": "What this finding means and why it's important"
+    },
+    {
+      "carousel_number": 2,
+      "title": "Carousel 2: Finding 1",
+      "subtitle": "Deep dive into insight",
+      "key_insight": "Detailed insight from data",
+      "cta_message": "Discover more insights",
+      "cta_button_text": "Read Full Analysis",
+      "insights": [
+        {
+          "headline": "Data Point 1",
+          "metric_label": "Metric 1",
+          "metric_value": "X value",
+          "description": "Explanation and context"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Main Metric",
+          "value": "123"
+        }
+      ],
+      "takeaway": "What this means for strategy"
+    },
+    {
+      "carousel_number": 3,
+      "title": "Carousel 3: Finding 2",
+      "subtitle": "Another key finding",
+      "key_insight": "Second major insight",
+      "cta_message": "Learn the full story",
+      "cta_button_text": "View Case Study",
+      "insights": [
+        {
+          "headline": "Data Point",
+          "metric_label": "Metric",
+          "metric_value": "Value",
+          "description": "Context"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Metric Name",
+          "value": "Result"
+        }
+      ],
+      "takeaway": "Implication"
+    }
+  ],
+  "hashtags": [
+    "#dataanalysis",
+    "#insights",
+    "#casestudy"
+  ],
+  "platforms_enabled": [
+    "linkedin",
+    "instagram",
+    "twitter",
+    "web"
+  ]
+}

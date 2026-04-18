@@ -1,0 +1,47 @@
+# Global Branding Configuration
+# Used across all carousel generation and format conversion
+
+branding:
+  # Primary brand colors (extract from your deck or brand guidelines)
+  primary_color: "#1F3A5D"          # Deep blue
+  secondary_color: "#FF6B35"        # Orange accent
+  tertiary_color: "#FFFFFF"         # White
+  background_color: "#F5F5F5"       # Light gray
+  text_color: "#1F3A5D"             # Dark text
+
+  # Typography
+  font_family_header: "Montserrat"  # Bold, modern headers
+  font_family_body: "Open Sans"     # Clean, readable body text
+  font_family_data: "Courier New"   # Monospace for numbers/data
+
+  # Logo & Assets
+  logo_path: "assets/logo.png"
+  logo_width_px: 80
+  logo_placement: "top-right"       # Options: top-left, top-right, bottom-left, bottom-right
+
+  # Visual Style
+  corner_radius_px: 8               # Rounded corners on elements
+  border_width_px: 2
+  shadow_enabled: true
+
+# Call-to-Action Templates (customize per project)
+cta_templates:
+  linkedin: "Read the full case study: {link}"
+  instagram: "Full analysis on my website 🔗 Link in bio"
+  twitter: "Full case study: {link}"
+  tiktok: "Check my profile for the full analysis 📊"
+  blog: "View full case study →"
+
+# Social Media Handles (update with your own)
+social_handles:
+  twitter: "@yourhandle"
+  instagram: "@yourhandle"
+  linkedin: "linkedin.com/in/yourprofile"
+  website: "yourwebsite.com"
+
+# Hashtag Library (customize by project)
+hashtags:
+  data_analysis: ["#dataanalysis", "#analytics", "#datadriven", "#insights"]
+  business: ["#business", "#strategy", "#entrepreneurship", "#growth"]
+  tech: ["#tech", "#product", "#innovation", "#startup"]
+  general: ["#portfolio", "#casestudy", "#research"]

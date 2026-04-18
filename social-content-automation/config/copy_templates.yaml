@@ -1,0 +1,153 @@
+# Social Copy Templates
+# Platform-specific templates for AI-generated copy
+
+copy_templates:
+
+  linkedin:
+    hook: "🔍 {insight_headline}"
+    structure:
+      - "Hook (question or bold statement)"
+      - "Context (why this matters)"
+      - "Data/Finding (2-3 key metrics)"
+      - "Takeaway (what this means)"
+      - "CTA (engage or read full case study)"
+    example: |
+      A luxury hotel paradox: booking rates drop as star ratings increase. Here's why.
+
+      In a recent analysis of {project_domain}, I discovered something counterintuitive.
+
+      📊 Finding: {key_metric}
+
+      This suggests {implication}. The opportunity: {action}.
+
+      What's your experience? Comment below or read the full case study → {link}
+
+    tone_notes:
+      - Professional but not stiff
+      - Data-backed (cite metrics)
+      - Thought-leaderly (position as expert)
+      - Engaging (ask questions)
+
+  instagram:
+    hook: "{emoji} {insight_headline}"
+    structure:
+      - "Hook (casual, relatable)"
+      - "Finding (main insight)"
+      - "Why it matters (2-3 words max)"
+      - "Quick stat (1-2 metrics)"
+      - "CTA + hashtags"
+    example: |
+      💡 Why luxury hotels underperform online
+
+      Analysis of {project_domain} revealed: {key_finding}
+
+      📊 The numbers: {metric} vs {comparison}
+
+      The implications? {brief_takeaway}
+
+      Full breakdown on my website 🔗 Link in bio
+      {hashtags}
+
+    tone_notes:
+      - Conversational, friendly
+      - Use emojis (2-4 per post)
+      - Shorter sentences
+      - Focus on visual storytelling
+
+  twitter:
+    structure:
+      - "Tweet 1: Hook/question (set up the thread)"
+      - "Tweets 2-6: Narrative breakdown (data + insight)"
+      - "Tweet 7-8: Takeaway + CTA"
+
+    tweet_1_example: |
+      Thread: Why {topic} fails on {platform} 🧵
+
+      What I found will surprise you. Here's the data 👇
+
+    tweet_middle_example: |
+      Insight {n}: {finding}
+
+      This is important because {why_matters}. Data: {metric}
+
+    tweet_final_example: |
+      The bottom line: {takeaway}
+
+      Full analysis + recommendations: {link}
+
+      What patterns have you noticed? Reply below.
+
+    tone_notes:
+      - Punchy, no fluff
+      - Each tweet is standalone
+      - Thread narrative is building
+      - Use thread emoji 🧵 in first tweet
+
+  tiktok:
+    structure:
+      - "Opening hook (2-3 seconds)"
+      - "Finding reveal (3-5 seconds)"
+      - "Data visualization (3-5 seconds)"
+      - "Takeaway (2-3 seconds)"
+      - "CTA (2-3 seconds)"
+
+    opening_hook_examples:
+      - "You think {common_belief}? Think again."
+      - "Why does {phenomenon} happen? Here's the data."
+      - "This statistic shocked me: {metric}"
+
+    tone_notes:
+      - Fast-paced, energetic
+      - Text overlay is key (people watch muted)
+      - Hook in first 2 seconds = stop-scroll moment
+      - CTA is subtle (profile link, not direct)
+
+  blog:
+    structure:
+      - "Bold headline (main insight)"
+      - "Subheader (supporting metric)"
+      - "Tagline (brief takeaway)"
+
+    example_headline: "{key_insight}: The Data Behind {topic}"
+    example_subheader: "{metric} increase when {condition}"
+    example_tagline: "Full analysis inside →"
+
+    tone_notes:
+      - Headline-focused
+      - Minimal text (visuals do the work)
+      - Professional tone
+      - Clear CTA
+
+# Hashtag Strategies (by project type)
+hashtag_strategies:
+  data_analysis:
+    primary: ["#dataanalysis", "#analytics", "#insights"]
+    secondary: ["#research", "#dataviz", "#casestudy"]
+    reach: 3-5 hashtags per Instagram post
+
+  product:
+    primary: ["#productmanagement", "#startup", "#growth"]
+    secondary: ["#innovation", "#design", "#productdevelopment"]
+    reach: 3-5 hashtags per Instagram post
+
+  business:
+    primary: ["#business", "#strategy", "#entrepreneurship"]
+    secondary: ["#economics", "#marketanalysis", "#growth"]
+    reach: 3-5 hashtags per Instagram post
+
+# Call-to-Action Variations (use strategically)
+cta_variations:
+  engagement:
+    - "What are your thoughts? Comment below."
+    - "Have you experienced this? Let me know in the replies."
+    - "Does this match your data? I'd love to hear from you."
+
+  traffic:
+    - "Read the full analysis on my website →"
+    - "Full case study: {link}"
+    - "Detailed breakdown on my website 🔗 Link in bio"
+
+  social_proof:
+    - "Share this if you found it useful"
+    - "Save this for reference"
+    - "Tag someone who should see this"

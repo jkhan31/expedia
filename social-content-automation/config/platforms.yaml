@@ -1,0 +1,104 @@
+# Platform Specifications
+# Defines dimensions, slide counts, and requirements for each social platform
+
+platforms:
+
+  linkedin:
+    description: "Professional carousel posts"
+    enabled: true
+    image_format: "png"
+    aspect_ratio: "4:5"              # 1080x1350
+    width_px: 1080
+    height_px: 1350
+    slides_per_carousel: 6-8
+    max_slides: 10
+    recommended_text_per_slide: "40-60 words"
+    post_length: "100-150 words"
+    tone: "professional"
+    supports_video: false
+    best_posting_days: ["Monday", "Wednesday", "Thursday"]
+    best_posting_times: "8-10 AM, 12-1 PM"
+
+  instagram:
+    description: "Square carousel posts"
+    enabled: true
+    image_format: "jpg"
+    aspect_ratio: "1:1"               # 1080x1080 (square)
+    width_px: 1080
+    height_px: 1080
+    slides_per_carousel: 5-7
+    max_slides: 10
+    recommended_text_per_slide: "20-40 words"
+    post_length: "80-120 words"
+    tone: "conversational"
+    supports_video: true              # Carousels on IG can include videos
+    supports_emoji: true
+    best_posting_days: ["Tuesday", "Wednesday", "Thursday", "Friday"]
+    best_posting_times: "11 AM - 1 PM, 7-9 PM"
+    note: "Square format optimizes for feed + story repurposing"
+
+  tiktok:
+    description: "Vertical short-form video"
+    enabled: true
+    video_format: "mp4"
+    aspect_ratio: "9:16"              # 1080x1920 (vertical)
+    width_px: 1080
+    height_px: 1920
+    duration_sec_min: 15
+    duration_sec_max: 60
+    recommended_duration: "30-45 seconds"
+    tone: "casual, energetic"
+    supports_text_overlay: true
+    supports_music: false             # Keep it simple (use system audio)
+    best_posting_days: ["Tuesday", "Wednesday", "Thursday"]
+    best_posting_times: "6-9 AM, 7-11 PM"
+    trend_friendly: true
+
+  twitter:
+    description: "Text-based threads"
+    enabled: true
+    format: "thread"
+    character_limit_per_tweet: 280
+    tweets_per_thread: "5-8"
+    tone: "conversational, punchy"
+    supports_video: false
+    supports_images: true
+    supports_threads: true
+    best_posting_times: "8-10 AM, 5-6 PM"
+    note: "Threads work better for longer narratives than single tweets"
+
+  blog:
+    description: "Website teaser/preview images"
+    enabled: true
+    image_format: "png"
+    aspect_ratio: "1.91:1"            # 1200x630 (standard social preview)
+    width_px: 1200
+    height_px: 630
+    use_case: "blog embeds, email headers, newsletter covers"
+    tone: "professional"
+    supports_logo: true
+    note: "Used as social preview when article is shared"
+
+  reels:
+    description: "Vertical short-form video (IG/Facebook)"
+    enabled: true
+    video_format: "mp4"
+    aspect_ratio: "9:16"              # 1080x1920 (vertical, same as TikTok)
+    width_px: 1080
+    height_px: 1920
+    duration_sec_min: 15
+    duration_sec_max: 90
+    recommended_duration: "30-60 seconds"
+    tone: "dynamic, engaging"
+    supports_text_overlay: true
+    supports_music: true
+    best_posting_times: "11 AM - 1 PM, 7-9 PM"
+    note: "Same aspect ratio as TikTok but optimized for IG algorithm"
+
+# Batch Generation Defaults
+defaults:
+  output_quality: "high"             # Options: low, medium, high
+  include_watermark: false
+  include_branding_footer: true
+  auto_resize_images: true
+  create_backups: true
