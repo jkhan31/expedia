@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expedia Marketplace Analysis — Jason Khanani</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="deck-stage.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --paper: #FAF5F0;
+  --ink: #1A1A1A;
+  --rust: #C73E1D;
+  --orange: #E8722A;
+  --green: #295C27;
+  --mid: #7A6A5A;
+  --border: rgba(26,26,26,0.1);
+  --paper-dark: #F0E9E1;
+}
+body { background: #000; font-family: 'Inter', sans-serif; }
+
+/* ── SLIDE BASE ── */
+section {
+  background: var(--paper);
+  color: var(--ink);
+  width: 100%; height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── COMMON LAYOUT ── */
+.slide-inner {
+  width: 100%; height: 100%;
+  padding: 80px 100px;
+  display: flex; flex-direction: column;
+}
+.slide-inner.center {
+  align-items: center; justify-content: center; text-align: center;
+}
+
+/* ── ACCENT BAR ── */
+.accent-bar {
+  width: 60px; height: 5px;
+  background: var(--rust);
+  margin-bottom: 32px;
+  flex-shrink: 0;
+}
+.accent-bar.green { background: var(--green); }
+
+/* ── SLIDE LABELS ── */
+.slide-label {
+  font-size: 14px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--rust);
+  margin-bottom: 20px; flex-shrink: 0;
+}
+
+/* ── HEADINGS ── */
+h1 { font-family: 'DM Sans', sans-serif; font-weight: 800; }
+h2 { font-family: 'DM Sans', sans-serif; font-weight: 700; }
+
+.title-big {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 96px; font-weight: 800; line-height: 1.0;
+  color: var(--ink); letter-spacing: -2px;
+}
+.title-big em { color: var(--rust); font-style: normal; }
+
+.slide-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 56px; font-weight: 700; line-height: 1.1;
+  letter-spacing: -1px; color: var(--ink);
+  margin-bottom: 16px;
+}
+.slide-title em { color: var(--rust); font-style: normal; }
+
+.slide-subtitle {
+  font-size: 26px; font-weight: 400; color: var(--mid);
+  line-height: 1.5; max-width: 700px;
+}
+
+/* ── DARK SECTION SLIDES ── */
+section.dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+section.dark .slide-title { color: var(--paper); }
+section.dark .slide-label { color: var(--orange); }
+section.dark .accent-bar { background: var(--orange); }
+
+/* ── STAT GRID ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  flex: 1;
+  margin-top: 40px;
+}
+.stat-card {
+  background: var(--paper-dark);
+  padding: 48px 40px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.stat-card.rust { background: var(--rust); color: var(--paper); }
+.stat-card.green { background: var(--green); color: var(--paper); }
+.stat-card.ink { background: var(--ink); color: var(--paper); }
+.stat-num {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 72px; font-weight: 800; line-height: 1;
+  letter-spacing: -2px;
+}
+.stat-label {
+  font-size: 18px; font-weight: 500; margin-top: 12px;
+  opacity: 0.7; letter-spacing: 0.3px;
+}
+.stat-card.rust .stat-label,
+.stat-card.green .stat-label,
+.stat-card.ink .stat-label { opacity: 0.75; }
+
+/* ── TWO COLUMN ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  flex: 1;
+  align-items: center;
+}
+.two-col.chart-right { grid-template-columns: 1fr 1.2fr; }
+.two-col.chart-left { grid-template-columns: 1.2fr 1fr; }
+
+/* ── FINDINGS LIST ── */
+.findings-list {
+  list-style: none;
+  margin-top: 32px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.findings-list li {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 24px;
+}
+.findings-list li:first-child { border-top: 1px solid var(--border); }
+.finding-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--rust);
+  letter-spacing: 1px; min-width: 28px; padding-top: 3px;
+}
+.finding-text { font-size: 22px; line-height: 1.5; }
+.finding-text strong { font-weight: 600; }
+
+/* ── METRIC PILLS ── */
+.metric-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-top: 32px;
+}
+.metric-pill {
+  padding: 20px 28px;
+  border-left: 4px solid var(--rust);
+  background: var(--paper-dark);
+}
+.metric-pill.green { border-left-color: var(--green); }
+.metric-pill.orange { border-left-color: var(--orange); }
+.pill-val {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 40px; font-weight: 800;
+  letter-spacing: -1px; line-height: 1;
+  color: var(--rust);
+}
+.metric-pill.green .pill-val { color: var(--green); }
+.metric-pill.orange .pill-val { color: var(--orange); }
+.pill-label {
+  font-size: 16px; font-weight: 500; color: var(--mid);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+/* ── CALLOUT BOX ── */
+.callout {
+  background: rgba(199,62,29,0.08);
+  border-left: 4px solid var(--rust);
+  padding: 24px 28px;
+  font-size: 22px; line-height: 1.6;
+  margin-top: 28px;
+}
+.callout strong { color: var(--rust); font-weight: 600; }
+.callout.green { border-left-color: var(--green); background: rgba(41,92,39,0.08); }
+.callout.green strong { color: var(--green); }
+
+/* ── CHART WRAPPER ── */
+.chart-box {
+  position: relative;
+  width: 100%; height: 100%;
+  min-height: 300px;
+}
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 20px;
+  margin-top: 32px;
+}
+.data-table thead { background: var(--ink); color: var(--paper); }
+.data-table th {
+  padding: 18px 20px; text-align: left;
+  font-family: 'Syne', sans-serif; font-size: 13px;
+  letter-spacing: 0.5px; font-weight: 700;
+}
+.data-table td { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+.data-table tbody tr:hover { background: var(--paper-dark); }
+.data-table .val-pos { color: var(--green); font-weight: 600; }
+.data-table .val-neg { color: var(--rust); font-weight: 600; }
+
+/* ── SEGMENT CARDS ── */
+.segment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px; flex: 1; margin-top: 40px;
+}
+.seg-card {
+  background: var(--paper-dark);
+  padding: 48px 36px;
+  display: flex; flex-direction: column; gap: 20px;
+  position: relative;
+}
+.seg-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 6px;
+}
+.seg-card.budget::before { background: var(--green); }
+.seg-card.mid::before { background: var(--orange); }
+.seg-card.luxury::before { background: var(--rust); }
+.seg-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
+}
+.seg-row { display: flex; flex-direction: column; gap: 4px; }
+.seg-sub { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--mid); }
+.seg-val { font-family: 'DM Sans', sans-serif; font-size: 36px; font-weight: 700; line-height: 1; }
+.seg-gap {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 22px; font-weight: 700;
+  padding: 6px 16px; display: inline-block; width: fit-content;
+}
+.seg-gap.pos { color: var(--green); background: rgba(41,92,39,0.12); }
+.seg-gap.neg { color: var(--rust); background: rgba(199,62,29,0.12); }
+.seg-booking {
+  border-top: 1px solid var(--border); padding-top: 20px; margin-top: 4px;
+}
+.seg-booking-val {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 48px; font-weight: 800; line-height: 1;
+}
+.seg-booking-val.pos { color: var(--green); }
+.seg-booking-val.neg { color: var(--rust); }
+
+/* ── ROADMAP ── */
+.roadmap {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 2px; flex: 1; margin-top: 40px;
+}
+.phase-card {
+  background: var(--paper-dark);
+  padding: 40px 32px;
+  display: flex; flex-direction: column;
+}
+.phase-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--rust);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.phase-weeks {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 32px; font-weight: 800; line-height: 1;
+  margin-bottom: 20px; letter-spacing: -0.5px;
+}
+.phase-items { list-style: none; flex: 1; }
+.phase-items li {
+  font-size: 18px; line-height: 1.5;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink); opacity: 0.8;
+}
+.phase-items li:last-child { border-bottom: none; }
+
+/* ── PRIORITY CARDS ── */
+.priority-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px; flex: 1; margin-top: 40px;
+}
+.priority-card {
+  padding: 48px 40px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.priority-card:nth-child(1) { background: var(--rust); color: var(--paper); }
+.priority-card:nth-child(2) { background: var(--ink); color: var(--paper); }
+.priority-card:nth-child(3) { background: var(--paper-dark); color: var(--ink); }
+.priority-rank {
+  font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6;
+}
+.priority-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 28px; font-weight: 800; line-height: 1.1;
+}
+.priority-body { font-size: 19px; line-height: 1.6; opacity: 0.8; flex: 1; }
+.priority-impact {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 36px; font-weight: 800; line-height: 1;
+}
+
+/* ── IMPACT SLIDE ── */
+.impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px; flex: 1; margin-top: 40px;
+}
+.impact-card {
+  background: var(--paper-dark);
+  padding: 48px 40px;
+}
+.impact-card.full { grid-column: span 2; background: var(--ink); color: var(--paper); }
+.impact-num {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 64px; font-weight: 800; line-height: 1;
+  letter-spacing: -2px; color: var(--rust);
+}
+.impact-card.full .impact-num { color: var(--orange); }
+.impact-desc { font-size: 21px; line-height: 1.5; margin-top: 12px; color: var(--mid); }
+.impact-card.full .impact-desc { color: rgba(250,245,240,0.7); }
+
+/* ── APPENDIX ── */
+.appendix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px; flex: 1; margin-top: 40px;
+}
+.appendix-block { display: flex; flex-direction: column; gap: 16px; }
+.appendix-title {
+  font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700;
+  border-bottom: 2px solid var(--rust); padding-bottom: 10px;
+}
+.appendix-list { list-style: none; }
+.appendix-list li {
+  font-size: 19px; line-height: 1.6;
+  padding: 10px 0 10px 20px; border-bottom: 1px solid var(--border);
+  position: relative; color: var(--ink); opacity: 0.85;
+}
+.appendix-list li::before { content: '—'; position: absolute; left: 0; color: var(--rust); }
+.appendix-list li:last-child { border-bottom: none; }
+
+/* ── BRANDING FOOTER ── */
+.brand-footer {
+  position: absolute; bottom: 40px; left: 100px;
+  display: flex; align-items: center; gap: 16px;
+}
+.brand-name {
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink);
+  letter-spacing: 0.5px;
+}
+.brand-title {
+  font-size: 13px; color: var(--mid);
+}
+.brand-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--rust);
+}
+.slide-num {
+  position: absolute; bottom: 40px; right: 100px;
+  font-size: 13px; color: var(--mid);
+  font-feature-settings: "tnum" 1;
+}
+
+/* ── DECORATIVE ── */
+.bg-number {
+  position: absolute; right: 0; bottom: -60px;
+  font-family: 'DM Sans', sans-serif; font-size: 320px; font-weight: 800;
+  line-height: 1; letter-spacing: -10px; color: var(--ink); opacity: 0.04;
+  user-select: none; pointer-events: none;
+  overflow: hidden; max-width: 100%;
+}
+section { overflow: hidden; }
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+<!-- ─── SLIDE 1: TITLE ─── -->
+<section data-label="Title">
+  <div class="slide-inner" style="justify-content:space-between;">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slide-label">Case Study</div>
+      <div class="title-big">Expedia<br><em>Marketplace</em><br>Analysis</div>
+      <div style="margin-top:40px; font-size:26px; color:var(--mid); max-width:700px; line-height:1.5;">
+        A data-driven diagnosis of conversion levers across 100,000 hotel search sessions
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:28px; font-weight:700; color:var(--ink);">Jason Kester Hanani</div>
+        <div style="font-size:20px; color:var(--mid); margin-top:6px;">Product Strategist · Data Analysis</div>
+        <div style="margin-top:16px; font-size:18px; color:var(--mid);">100k searches · 2012–2013 · Kaggle Expedia Dataset</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:18px; color:var(--mid);">April 2026</div>
+      </div>
+    </div>
+  </div>
+  <!-- decorative corner blocks -->
+  <div style="position:absolute;top:0;right:0;width:420px;height:420px;background:var(--rust);opacity:0.06;"></div>
+  <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:var(--rust);opacity:0.06;"></div>
+</section>
+
+<!-- ─── SLIDE 2: EXECUTIVE SUMMARY ─── -->
+<section data-label="Executive Summary">
+  <div class="slide-inner">
+    <div class="slide-label">Executive Summary</div>
+    <div class="slide-title">Four Numbers<br>That Tell the Story</div>
+    <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="stat-card rust">
+        <div class="stat-num">−27%</div>
+        <div class="stat-label">Luxury booking rate vs. Budget — the gap we need to close</div>
+      </div>
+      <div class="stat-card ink">
+        <div class="stat-num">5.22×</div>
+        <div class="stat-label">Booking lift from Position 1 vs. Position 10 — the biggest lever</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--rust);">−2.3%</div>
+        <div class="stat-label">Quality gap: luxury hotels under-deliver on star rating promises</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-num">1.34×</div>
+        <div class="stat-label">Conversion lift for returning visitors — trust is the differentiator</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 3: THE PROBLEM ─── -->
+<section data-label="The Problem">
+  <div class="slide-inner">
+    <div class="slide-label">The Problem</div>
+    <div class="two-col chart-right" style="align-items:flex-start; margin-top:0; flex:1;">
+      <div style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+        <div class="slide-title">Luxury Lags<br><em>Budget by 27%</em></div>
+        <div class="slide-subtitle">Overall booking rate is 2.8% — but it varies dramatically by hotel segment.</div>
+        <div class="metric-row">
+          <div class="metric-pill green">
+            <div class="pill-val">3.04%</div>
+            <div class="pill-label">Budget</div>
+          </div>
+          <div class="metric-pill orange">
+            <div class="pill-val">2.89%</div>
+            <div class="pill-label">Mid-tier</div>
+          </div>
+          <div class="metric-pill">
+            <div class="pill-val">2.20%</div>
+            <div class="pill-label">Luxury</div>
+          </div>
+        </div>
+        <div class="callout">
+          On a platform handling millions of searches, <strong>0.84pp gap in luxury bookings</strong> represents substantial lost revenue. The question is: why?
+        </div>
+      </div>
+      <div class="chart-box" style="height:500px;">
+        <canvas id="chart-booking-segment"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="bg-number">27</div>
+</section>
+
+<!-- ─── SLIDE 4: METHODOLOGY ─── -->
+<section class="dark" data-label="Methodology">
+  <div class="slide-inner">
+    <div class="slide-label">Methodology</div>
+    <div class="slide-title" style="color:var(--paper);">Moving Beyond<br>Correlation</div>
+    <div class="findings-list" style="margin-top:40px;">
+      <li style="color:var(--paper); border-color:rgba(250,245,240,0.12);">
+        <span class="finding-num">01</span>
+        <span class="finding-text"><strong>Outcome data, not proxies.</strong> Dataset includes direct signals — <code style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:3px;">booking_bool</code> and <code style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:3px;">click_bool</code> — enabling causal measurement of actual behavior.</span>
+      </li>
+      <li style="color:var(--paper); border-color:rgba(250,245,240,0.12);">
+        <span class="finding-num">02</span>
+        <span class="finding-text"><strong>Funnel analysis.</strong> Impression → Click → Booking rates measured by segment to locate where friction occurs.</span>
+      </li>
+      <li style="color:var(--paper); border-color:rgba(250,245,240,0.12);">
+        <span class="finding-num">03</span>
+        <span class="finding-text"><strong>Hypothesis-driven.</strong> Five specific hypotheses tested with statistical comparison — price, position, ranking quality, trust signals, and experience effects.</span>
+      </li>
+      <li style="color:var(--paper); border-color:rgba(250,245,240,0.12);">
+        <span class="finding-num">04</span>
+        <span class="finding-text"><strong>100k sample.</strong> 3,542 unique searches, 8,390 unique properties from the Kaggle Expedia Personalized Sort Challenge (2012–2013).</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── SLIDE 5: THE FUNNEL ─── -->
+<section data-label="The Funnel">
+  <div class="slide-inner">
+    <div class="slide-label">Funnel Analysis</div>
+    <div class="two-col" style="align-items:flex-start; flex:1; margin-top:0;">
+      <div style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+        <div class="slide-title">The Drop Happens<br><em>After the Click</em></div>
+        <div class="slide-subtitle">Both metrics below are percentages of total impressions — so they're directly comparable. Users click at similar rates; they book at very different ones.</div>
+        <div class="metric-row" style="flex-direction:column; gap:8px; margin-top:32px;">
+          <div style="display:flex;align-items:center;gap:20px;">
+            <div style="width:12px;height:12px;border-radius:50%;background:var(--orange);"></div>
+            <div style="font-size:20px;"><strong>CTR:</strong> Budget 4.6% · Mid 4.7% · Luxury 4.1% — of impressions clicked</div>
+          </div>
+          <div style="width:2px;height:20px;background:var(--border);margin-left:5px;"></div>
+          <div style="display:flex;align-items:center;gap:20px;">
+            <div style="width:12px;height:12px;border-radius:50%;background:var(--rust);"></div>
+            <div style="font-size:20px;"><strong>Booking rate:</strong> Budget 3.04% · Mid 2.89% · Luxury 2.20% — of impressions booked</div>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:28px;">
+          CTR is similar. Booking rate diverges sharply. <strong>The gap opens after the click</strong> — on the hotel detail page, not in the search results.
+        </div>
+      </div>
+      <div class="chart-box" style="height:520px;">
+        <canvas id="chart-funnel"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 6: FINDING 1 — PRICE ─── -->
+<section data-label="Finding 1 Price">
+  <div class="slide-inner">
+    <div class="slide-label">Finding 01 of 05</div>
+    <div class="two-col chart-right" style="align-items:flex-start; flex:1; margin-top:0;">
+      <div style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+        <div class="slide-title">Price Is Already<br><em>At Equilibrium</em></div>
+        <div class="slide-subtitle">There is a 0.83pp spread across price tiers — but the market has already priced this in. There is no room left to move.</div>
+        <div class="metric-row" style="margin-top:32px;">
+          <div class="metric-pill green">
+            <div class="pill-val">3.38%</div>
+            <div class="pill-label">Underpriced</div>
+          </div>
+          <div class="metric-pill orange">
+            <div class="pill-val">3.01%</div>
+            <div class="pill-label">At Parity</div>
+          </div>
+          <div class="metric-pill">
+            <div class="pill-val">2.55%</div>
+            <div class="pill-label">Overpriced</div>
+          </div>
+        </div>
+        <div class="callout">
+          Price-to-booking correlation: <strong>+0.0289</strong>. Hotels are already competitively priced — the spread reflects market equilibrium, not an untapped lever. Redeploying this effort elsewhere has far higher ROI.
+        </div>
+      </div>
+      <div class="chart-box" style="height:480px;">
+        <canvas id="chart-price"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="bg-number">01</div>
+</section>
+
+<!-- ─── SLIDE 7: FINDING 2 — POSITION ─── -->
+<section data-label="Finding 2 Position">
+  <div class="slide-inner">
+    <div class="slide-label">Finding 02 of 05</div>
+    <div class="two-col chart-left" style="align-items:flex-start; flex:1; margin-top:0;">
+      <div class="chart-box" style="height:500px;">
+        <canvas id="chart-position"></canvas>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+        <div class="slide-title">Position<br>Drives <em>5.22× Lift</em></div>
+        <div class="slide-subtitle">The single most powerful conversion lever — and it works through trust, not just visibility.</div>
+        <div class="metric-row" style="margin-top:32px;">
+          <div class="metric-pill green">
+            <div class="pill-val">13.37%</div>
+            <div class="pill-label">Position 1</div>
+          </div>
+          <div class="metric-pill">
+            <div class="pill-val">2.56%</div>
+            <div class="pill-label">Position 10</div>
+          </div>
+        </div>
+        <div class="callout green">
+          Booking elasticity (5.22×) exceeds <strong>click elasticity (4.53×)</strong>. Position matters more for post-click conversion than for getting the click — it functions as a credibility signal, not just a ranking slot.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-number">02</div>
+</section>
+
+<!-- ─── SLIDE 8: FINDING 3 — RANKING QUALITY ─── -->
+<section data-label="Finding 3 Ranking">
+  <div class="slide-inner">
+    <div class="slide-label">Finding 03 of 05</div>
+    <div class="slide-title">CTR Is Similar —<br><em>Post-Click Tells the Real Story</em></div>
+    <div class="slide-subtitle">Of every 100 hotel listings shown in search results, roughly 4–5 get clicked across all segments. The conversion gap happens after that click.</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:32px; height:280px;">
+      <div class="stat-card green">
+        <div class="stat-num">4.6%</div>
+        <div class="stat-label">Budget: clicked per 100 listings shown &rarr; 66% of those clickers book</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--orange);">4.7%</div>
+        <div class="stat-label">Mid-tier: clicked per 100 listings shown &rarr; 62% of those clickers book</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--rust);">4.1%</div>
+        <div class="stat-label">Luxury: clicked per 100 listings shown &rarr; only 54% of those clickers book</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:24px;">
+      A 0.6pp CTR difference is modest. The post-click conversion gap — Budget <strong>66%</strong> vs Luxury <strong>54%</strong> — is <strong>12pp wider</strong>. The problem is what users find after they click, not how we rank.
+    </div>
+  </div>
+  <div class="bg-number">03</div>
+</section>
+
+<!-- ─── SLIDE 9: FINDING 4 — QUALITY TRUST GAP ─── -->
+<section data-label="Finding 4 Quality Trust Gap">
+  <div class="slide-inner">
+    <div class="slide-label">Finding 04 of 05</div>
+    <div class="slide-title">The <em>Quality Trust Gap</em><br>Explains Everything</div>
+    <div style="font-size:17px;color:var(--mid);margin-bottom:4px;">Star ratings are industry classifications (1–5★). Review scores are guest ratings on the same 0–5 scale.</div>
+    <table class="data-table" style="margin-top:12px;">
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th>Star Rating Promise</th>
+          <th>Review Score Delivery</th>
+          <th>Gap</th>
+          <th>Hotels Beating Promise</th>
+          <th>Booking Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Budget</strong></td>
+          <td>2.40 ★</td>
+          <td>3.39</td>
+          <td class="val-pos">+41%</td>
+          <td>78%</td>
+          <td><strong>3.04%</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Mid</strong></td>
+          <td>3.34 ★</td>
+          <td>3.97</td>
+          <td class="val-pos">+18%</td>
+          <td>73%</td>
+          <td><strong>2.89%</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Luxury</strong></td>
+          <td>4.30 ★</td>
+          <td>4.20</td>
+          <td class="val-neg">−2.3%</td>
+          <td>39%</td>
+          <td class="val-neg"><strong>2.20%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout" style="margin-top:24px;">
+      Only <strong>39%</strong> of luxury hotels beat their promise, vs. 78% of Budget hotels. Budget travellers expect little and are delighted; luxury travellers expect perfection and feel let down. <strong>The fix is credibility, not price.</strong>
+    </div>
+  </div>
+  <div class="bg-number">04</div>
+</section>
+
+<!-- ─── SLIDE 10: FINDING 5 — RETURNING VISITORS ─── -->
+<section data-label="Finding 5 Returning Visitors">
+  <div class="slide-inner">
+    <div class="slide-label">Finding 05 of 05</div>
+    <div class="two-col chart-right" style="align-items:flex-start; flex:1; margin-top:0;">
+      <div style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+        <div class="slide-title">Trust Drives<br><em>1.34× More Bookings</em></div>
+        <div class="slide-subtitle">Returning visitors and new visitors click at nearly the same rate — but returning visitors book significantly more.</div>
+        <div class="metric-row" style="margin-top:32px;">
+          <div class="metric-pill">
+            <div class="pill-val">2.74%</div>
+            <div class="pill-label">New visitors</div>
+          </div>
+          <div class="metric-pill green">
+            <div class="pill-val">3.66%</div>
+            <div class="pill-label">Returning visitors</div>
+          </div>
+        </div>
+        <div class="callout green">
+          Click rates are nearly identical (4.49% vs 4.61%). <strong>Trust — not visibility — is the differentiator.</strong>
+        </div>
+      </div>
+      <div class="chart-box" style="height:440px;">
+        <canvas id="chart-returning"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="bg-number">05</div>
+</section>
+
+<!-- ─── SLIDE 11: ROOT CAUSE ─── -->
+<section data-label="Root Cause">
+  <div class="slide-inner">
+    <div class="slide-label">Root Cause</div>
+    <div class="slide-title">The Luxury<br><em>Credibility Problem</em></div>
+    <div class="segment-grid">
+      <div class="seg-card budget">
+        <div class="seg-name">Budget</div>
+        <div class="seg-row">
+          <span class="seg-sub">Promise</span>
+          <span class="seg-val">2.40 ★</span>
+        </div>
+        <div class="seg-gap pos">+41% over-delivers</div>
+        <div class="seg-row">
+          <span class="seg-sub">Delivers</span>
+          <span class="seg-val">3.39 score</span>
+        </div>
+        <div class="seg-booking">
+          <div class="seg-sub">Booking Rate</div>
+          <div class="seg-booking-val pos">3.04%</div>
+        </div>
+      </div>
+      <div class="seg-card mid">
+        <div class="seg-name">Mid-tier</div>
+        <div class="seg-row">
+          <span class="seg-sub">Promise</span>
+          <span class="seg-val">3.34 ★</span>
+        </div>
+        <div class="seg-gap pos">+18% over-delivers</div>
+        <div class="seg-row">
+          <span class="seg-sub">Delivers</span>
+          <span class="seg-val">3.97 score</span>
+        </div>
+        <div class="seg-booking">
+          <div class="seg-sub">Booking Rate</div>
+          <div class="seg-booking-val pos">2.89%</div>
+        </div>
+      </div>
+      <div class="seg-card luxury">
+        <div class="seg-name">Luxury</div>
+        <div class="seg-row">
+          <span class="seg-sub">Promise</span>
+          <span class="seg-val">4.30 ★</span>
+        </div>
+        <div class="seg-gap neg">−2.3% under-delivers</div>
+        <div class="seg-row">
+          <span class="seg-sub">Delivers</span>
+          <span class="seg-val">4.20 score</span>
+        </div>
+        <div class="seg-booking">
+          <div class="seg-sub">Booking Rate</div>
+          <div class="seg-booking-val neg">2.20%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 12: STRATEGIC PRIORITIES ─── -->
+<section data-label="Strategic Priorities">
+  <div class="slide-inner">
+    <div class="slide-label">Strategy</div>
+    <div class="slide-title">Three Priorities.<br><em>One Root Fix.</em></div>
+    <div class="priority-grid">
+      <div class="priority-card">
+        <div class="priority-rank">Priority 01</div>
+        <div class="priority-title">Fix the Luxury Quality Gap</div>
+        <div class="priority-body">Audit all 4.3★+ luxury listings for promise-delivery gaps. Delist or require improvement where gap exceeds 0.2★. Replace star ratings with verified buyer scores in search results.</div>
+        <div class="priority-impact">+0.6pp</div>
+        <div style="font-size:13px; opacity:0.7; margin-top:4px;">Expected booking rate lift</div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-rank">Priority 02</div>
+        <div class="priority-title">Retrain Ranking on Conversion Signals</div>
+        <div class="priority-body">Incorporate quality signals — verified reviews, satisfaction rates, on-time delivery — alongside relevance. Surface high-confidence hotels at Position 1–3 where the conversion multiplier is greatest.</div>
+        <div class="priority-impact">+0.4pp</div>
+        <div style="font-size:13px; opacity:0.7; margin-top:4px;">Expected incremental lift</div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-rank">Priority 03</div>
+        <div class="priority-title">Build Trust Signals into the UI</div>
+        <div class="priority-body">Highlight verified buyer reviews. Show "beats traveler expectations" badges. Expose returning visitor satisfaction rates. Help skeptical luxury buyers find confidence before they bounce.</div>
+        <div class="priority-impact">+0.3pp</div>
+        <div style="font-size:13px; color:var(--mid); margin-top:4px;">Expected secondary lift</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 13: ROADMAP ─── -->
+<section data-label="Implementation Roadmap">
+  <div class="slide-inner">
+    <div class="slide-label">Implementation</div>
+    <div class="slide-title">8-Week<br><em>Roadmap</em></div>
+    <div class="roadmap">
+      <div class="phase-card">
+        <div class="phase-num">Phase 01</div>
+        <div class="phase-weeks">Wk 1–2</div>
+        <ul class="phase-items">
+          <li>Audit all 4.3★+ luxury listings</li>
+          <li>Flag promise-delivery gaps &gt;0.2★</li>
+          <li>Segment by gap severity</li>
+        </ul>
+      </div>
+      <div class="phase-card" style="background:var(--paper-dark);">
+        <div class="phase-num">Phase 02</div>
+        <div class="phase-weeks">Wk 3–4</div>
+        <ul class="phase-items">
+          <li>Investigate root causes per property</li>
+          <li>Photos, amenities, maintenance flags</li>
+          <li>Delist or require remediation</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 03</div>
+        <div class="phase-weeks">Wk 5–6</div>
+        <ul class="phase-items">
+          <li>A/B test: verified ratings vs. star ratings</li>
+          <li>Launch quality-based ranking experiment</li>
+          <li>Measure booking lift in luxury segment</li>
+        </ul>
+      </div>
+      <div class="phase-card" style="background:var(--paper-dark);">
+        <div class="phase-num">Phase 04</div>
+        <div class="phase-weeks">Wk 7–8</div>
+        <ul class="phase-items">
+          <li>Roll out trust signal UI changes</li>
+          <li>Monitor secondary conversion lift</li>
+          <li>Report: 2.20% → 2.31% target</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 14: EXPECTED IMPACT ─── -->
+<section data-label="Expected Impact">
+  <div class="slide-inner">
+    <div class="slide-label">Business Impact</div>
+    <div class="slide-title">A <em>$50M+</em> Opportunity<br>Waiting for a Quality Fix</div>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-num">2.20%</div>
+        <div class="impact-desc">Current luxury booking rate — baseline we're improving from</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num" style="color:var(--green);">2.31%</div>
+        <div class="impact-desc">Target luxury booking rate after quality gap fix — a 5% lift</div>
+      </div>
+      <div class="impact-card full">
+        <div class="impact-num">How we get to $50M+</div>
+        <div class="impact-desc" style="margin-top:16px; font-size:20px; line-height:2;">
+          Expedia processes ~500M hotel searches/year &nbsp;→&nbsp; Luxury segment (~20%) = <strong>~100M luxury searches</strong><br>
+          At ~4.5% CTR &nbsp;→&nbsp; <strong>~4.5M luxury hotel page views</strong><br>
+          Lifting post-click conversion by 5% &nbsp;→&nbsp; <strong>~225k incremental bookings</strong><br>
+          At avg. luxury booking value ~$250 &nbsp;→&nbsp; <strong>~$56M additional GMV</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 15: APPENDIX ─── -->
+<section data-label="Appendix">
+  <div class="slide-inner">
+    <div class="slide-label">Appendix</div>
+    <div class="slide-title">Data &<br><em>Methodology</em></div>
+    <div class="appendix-grid">
+      <div class="appendix-block">
+        <div class="appendix-title">Dataset</div>
+        <ul class="appendix-list">
+          <li>100,000 sample searches from Kaggle: Expedia Personalized Sort Challenge (2012–2013)</li>
+          <li>3,542 unique searches · 8,390 unique properties</li>
+          <li>54 columns including search context, property attributes, competitor pricing, outcome flags</li>
+          <li>Price range capped at $8–$1,000 to remove outliers ($8–$176k raw range)</li>
+          <li>35% competitor data missingness — analyzed only searches with ≥3 competitors</li>
+        </ul>
+      </div>
+      <div class="appendix-block">
+        <div class="appendix-title">Limitations & Caveats</div>
+        <ul class="appendix-list">
+          <li>Data is from 2012–2013; booking behavior has likely evolved</li>
+          <li>Properties and visitors are anonymized — no name-level validation</li>
+          <li>Sparse new-user history data (NaN for visitors with no prior bookings)</li>
+          <li>Sample of 10k rows used for most analyses; 100k for segment overviews</li>
+          <li>Findings framed as "correlated with" not "causes" except where outcome-driven A/B logic supports causation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</deck-stage>
+
+<script>
+// Chart rendering after deck is mounted
+document.querySelector('deck-stage').addEventListener('slidechange', (e) => {
+  const idx = e.detail.index;
+  setTimeout(() => initChart(idx), 80);
+});
+
+const rendered = new Set();
+
+function initChart(idx) {
+  if (rendered.has(idx)) return;
+  rendered.add(idx);
+
+  const rust = '#C73E1D';
+  const orange = '#E8722A';
+  const green = '#295C27';
+  const ink = '#1A1A1A';
+  const paper = '#FAF5F0';
+  const gray = 'rgba(26,26,26,0.15)';
+
+  const baseOpts = (yMax) => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: ink, titleColor: paper, bodyColor: 'rgba(250,245,240,0.75)',
+      padding: 14, cornerRadius: 2,
+      callbacks: { label: ctx => ` ${ctx.parsed.y}%` }
+    }},
+    scales: {
+      y: {
+        beginAtZero: true, max: yMax,
+        grid: { color: 'rgba(26,26,26,0.06)', drawBorder: false },
+        ticks: { font: { size: 13, family: 'Inter' }, color: 'rgba(26,26,26,0.45)', padding: 10,
+          callback: v => v + '%' }
+      },
+      x: {
+        grid: { display: false, drawBorder: false },
+        ticks: { font: { size: 13, family: 'Inter' }, color: 'rgba(26,26,26,0.55)', padding: 10 }
+      }
+    }
+  });
+
+  // Slide 2 (idx=2): Booking by segment
+  if (idx === 2) {
+    const c = document.getElementById('chart-booking-segment');
+    if (!c || c._inited) return; c._inited = true;
+    new Chart(c, {
+      type: 'bar',
+      data: {
+        labels: ['Budget', 'Mid-tier', 'Luxury'],
+        datasets: [{
+          data: [3.04, 2.89, 2.20],
+          backgroundColor: [green, orange, rust],
+          borderWidth: 0, borderRadius: 0
+        }]
+      },
+      options: { ...baseOpts(4), plugins: { ...baseOpts(4).plugins,
+        annotation: {} } }
+    });
+  }
+
+  // Slide 4 (idx=4): CTR vs Booking rate (both % of impressions)
+  if (idx === 4) {
+    const c = document.getElementById('chart-funnel');
+    if (!c || c._inited) return; c._inited = true;
+    new Chart(c, {
+      type: 'bar',
+      data: {
+        labels: ['Budget', 'Mid-tier', 'Luxury'],
+        datasets: [
+          {
+            label: 'CTR (% of impressions)',
+            data: [4.6, 4.7, 4.1],
+            backgroundColor: ['rgba(26,26,26,0.2)', 'rgba(26,26,26,0.2)', 'rgba(26,26,26,0.2)'],
+            borderWidth: 0
+          },
+          {
+            label: 'Booking rate (% of impressions)',
+            data: [3.04, 2.89, 2.20],
+            backgroundColor: [green, orange, rust],
+            borderWidth: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: ink, font: { size: 13, family: 'Inter' }, padding: 20, boxWidth: 14, boxHeight: 14 }
+          },
+          tooltip: {
+            backgroundColor: ink, titleColor: paper, bodyColor: 'rgba(250,245,240,0.75)',
+            padding: 14, cornerRadius: 2,
+            callbacks: { label: ctx => ` ${ctx.parsed.y}%` }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true, max: 6,
+            grid: { color: 'rgba(26,26,26,0.06)', drawBorder: false },
+            ticks: { font: { size: 13, family: 'Inter' }, color: 'rgba(26,26,26,0.45)', padding: 10, callback: v => v + '%' }
+          },
+          x: {
+            grid: { display: false, drawBorder: false },
+            ticks: { font: { size: 13, family: 'Inter' }, color: 'rgba(26,26,26,0.55)', padding: 10 }
+          }
+        }
+      }
+    });
+  }
+
+  // Slide 5 (idx=5): Price
+  if (idx === 5) {
+    const c = document.getElementById('chart-price');
+    if (!c || c._inited) return; c._inited = true;
+    new Chart(c, {
+      type: 'bar',
+      data: {
+        labels: ['Underpriced', 'At Parity', 'Overpriced'],
+        datasets: [{
+          data: [3.38, 3.01, 2.55],
+          backgroundColor: ['rgba(26,26,26,0.18)', 'rgba(26,26,26,0.18)', 'rgba(26,26,26,0.18)'],
+          borderWidth: 0
+        }]
+      },
+      options: baseOpts(5)
+    });
+  }
+
+  // Slide 6 (idx=6): Position
+  if (idx === 6) {
+    const c = document.getElementById('chart-position');
+    if (!c || c._inited) return; c._inited = true;
+    new Chart(c, {
+      type: 'bar',
+      data: {
+        labels: ['Pos 1', 'Pos 2', 'Pos 3', 'Pos 4', 'Pos 5', 'Pos 10'],
+        datasets: [{
+          data: [13.37, 7.5, 5.8, 4.2, 3.5, 2.56],
+          backgroundColor: [rust, rust, rust, rust, rust, 'rgba(199,62,29,0.35)'],
+          borderWidth: 0
+        }]
+      },
+      options: baseOpts(16)
+    });
+  }
+
+  // Slide 9 (idx=9): Returning visitors
+  if (idx === 9) {
+    const c = document.getElementById('chart-returning');
+    if (!c || c._inited) return; c._inited = true;
+    new Chart(c, {
+      type: 'bar',
+      data: {
+        labels: ['New Visitor', 'Returning'],
+        datasets: [
+          {
+            label: 'Click Rate',
+            data: [4.49, 4.61],
+            backgroundColor: ['rgba(26,26,26,0.2)', 'rgba(26,26,26,0.2)'],
+            borderWidth: 0
+          },
+          {
+            label: 'Booking Rate',
+            data: [2.74, 3.66],
+            backgroundColor: [rust, green],
+            borderWidth: 0
+          }
+        ]
+      },
+      options: {
+        ...baseOpts(6),
+        plugins: {
+          ...baseOpts(6).plugins,
+          legend: {
+            display: true,
+            labels: { color: ink, font: { size: 13, family: 'Inter' }, padding: 20, boxWidth: 14, boxHeight: 14 }
+          }
+        }
+      }
+    });
+  }
+}
+
+// init first slide
+initChart(0);
+</script>
+</body>
+</html>
